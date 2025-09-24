@@ -18,6 +18,7 @@ int main()
 
 	int dogumYili = 1980;
 	int birinciSinavNotu = 97;
+	int seninLakabin1 = 13;
 				
 	return 0;
 }
