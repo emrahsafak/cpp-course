@@ -8,4 +8,4 @@ This repository contains my exercises and projects while learning C++.
 - [Lesson 01: Introduction](lesson-01-introduction/)  
 - [Lesson 02: Variables](lesson-02-variables/)  
 - [Lesson 03: Data Types](lesson-03-dataTypes/)
-- [Lesson 04: Arithmetic Operations](lesson-04-arithmeticOperations/)
+- [Lesson 04: Numbers Stuff](lesson-04-numbersStuff/)
