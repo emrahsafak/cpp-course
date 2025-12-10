@@ -14,7 +14,7 @@ int main()
 	// - Degiskenisimlerinde arada nokta vb. karakterler kullanilamaz.
 
 	// Degisken isimlerini camelCase standartlarina uygun yazmaniz tavsiye olunur.
-
+    // Degisken isimlerini camelCase standardiyla yazmaniz tavsiye edilir.
 
 	int dogumYili = 1980;
 	int birinciSinavNotu = 97;
