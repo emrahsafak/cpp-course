@@ -21,7 +21,7 @@ int main()
 
 	int x = 12;
 	int y = 10;
-	int z = 15 % 2; // % : mod ( modulus ) operatoru
+	int z = 15 % 2; // % : mod ( modulus ) operatoru bolumunden kalan demektir. 15/2 den kalan = 1 
 
 	cout << (x + z)* y << endl;
 
