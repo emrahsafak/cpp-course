@@ -10,7 +10,7 @@ int main()
 	cout << "Yapmak istediginiz islemi seciniz: \n1-Toplama\n2-Cikarma\n3-Carpma\n4-Bolme\n";
 	cin >> islem;
 
-	if (islem == 1)   //eger islem 1 ise ifin icindeki kod blogu calisir, else if lerin hicbiri calismaz ve dogrudan  cout << "Islem sonucu: " << sonuc << endl;  satirina gider
+	if (islem == 1)   //eger islem 1 ise if in icindeki kod blogu calisir, else if lerin hicbiri calismaz ve dogrudan  cout << "Islem sonucu: " << sonuc << endl;  satirina gider
 	{
 		sonuc = sayi1 + sayi2;
 	}
