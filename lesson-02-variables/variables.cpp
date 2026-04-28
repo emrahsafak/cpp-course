@@ -9,7 +9,7 @@ string isim; //  noun declaration
 isim = "Emrah"; // noun initialization
 
 int yas = 20; // integer declaration + initialization
-
+// string isim = Emrah ==> string declaration + initialization
 
 /*
    Degisken verdigimiz zaman sayilarda ( int veri tipi ) tirnak isaretleri ile ugrasilmaz fakat isimlerde (string veri tipi) tirnak isareti ile cevreleyip belirtmemiz gerekir.
