@@ -30,3 +30,10 @@ int main()
     return 0;
 }
 
+// DAHA PROFOSYONEL HALI 	
+
+// Your version (correct, but slightly redundant):
+else if (sicaklik >= 25 && sicaklik < 35)
+
+// Cleaner professional version:
+else if (sicaklik < 35)  // If we reach here, >= 25 is already guaranteed
