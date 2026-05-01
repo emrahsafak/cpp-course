@@ -29,7 +29,9 @@ int main()
     double ortalama = (double)(sinav1 + sinav2 + sinav3) / 3.0; // ya 3.0 diye ya da double ort = (double) diye cast etmek gerekir. 
 
 	// I) Ondalikli sekilde, 2 basamak hassasiyetle yazdır
-	cout << "I) Ortalama (ondalikli): " << fixed << setprecision(5) << ortalama << endl;
+	cout << "I) Ortalama (ondalikli): " << fixed << setprecision(5) << ortalama << endl; 
+	// setprecision(N) manipulatoru toplam anlamli rakam ( significant digits) sayisini ayarlar.
+	// noktadan sonraki digit sayisinin hassasiyetini belirlemek icin fixed ve setprecision birlikte kullanilir. 
 
 	int sonuc = round(ortalama);
 	// II) Yuvarlama yaparak tam sayı sonuc
