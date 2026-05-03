@@ -50,7 +50,7 @@ int main()
 //
 //  for (int j = 1; j <= sayi; j++)
 //
-//  j = 1 den başlar, sayi'ye (5) kadar gider.
+//  j = 1 den başlar, sayi'ya (5) kadar gider.
 //  Her j değeri = bir satır demektir.
 //  j=1 → 1. satır
 //  j=2 → 2. satır
