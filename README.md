@@ -12,3 +12,4 @@ This repository contains my exercises and projects while learning C++.
 - [Lesson 05: Input and Library](lesson-05-input_library/)
 - [Lesson 06: Introduction to Algorithms ](lesson-06-algorithms/)
 - [Lesson 07: Loops](lesson-07-loops/)
+- [Lesson 08: Functions](lesson-08-functions/)
