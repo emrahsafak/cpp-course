@@ -162,7 +162,7 @@ int main()
 //  Fonksiyon → belirli bir görevi yerine getiren, isim verilmiş kod bloğudur.
 //  Bir kez yazılır, istenen her yerden istenen sayıda çağrılabilir.
 //
-//  Fizik Analojisi:
+// Matematik Analojisi:
 //    Tıpkı f(x) = 3x + 2 gibi → girdi ver, çıktı al.
 //    Fonksiyonun içinde ne olduğu çağıran yeri ilgilendirmez.
 //    Buna "soyutlama (abstraction)" denir.
