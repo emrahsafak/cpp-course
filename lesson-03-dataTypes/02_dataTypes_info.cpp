@@ -12,5 +12,7 @@ int main()
 	// bool: ABoolean variable can store either true or false, 1 byte
 	// float: Used for storing decimal values. 4 bytes of memory
 	// double: Udes for storing decimal values. 8 bytes of memory 
-	// string: Bir karakter diziini (METİN)		depolamak için kullanilir. Yukaridakiler gibi primitive bir tür değildir ancak en temel kullaniminda bunlar gibi davranır.
+	// string: Bir karakter diziini (METİN)		
+depolamak için kullanilir. Yukaridakiler gibi primitive bir tür değildir ancak en temel kullaniminda bunlar gibi davranır.
+
 	// void Void herangi bir degeri olmayan anlamina gelir. Değer dondurmeyen işlevler icin void veri turu kullanilir.
