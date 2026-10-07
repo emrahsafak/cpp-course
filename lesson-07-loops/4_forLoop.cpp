@@ -204,6 +204,90 @@ int main()
     //  for içinde  →  for bitince ölür  →  dışarıdan ❌
     //  main içinde →  main bitince ölür →  for içinden ✓
 
+    // ════════════════════════════════════════════════════════════
+    // BÖLÜM 6: DEĞİŞKENİN BELLEKTEKİ GERÇEK DAVRANIŞI
+    //          (i ve j NEDEN FARKLI YAŞIYOR? — TEKNİK DETAY)
+    // ════════════════════════════════════════════════════════════
+    //
+    // ── 6.1) "YENİLENİYOR" DEĞİL, "YERİNDE GÜNCELLENİYOR" ─────────
+    //
+    // Sık yapılan zihinsel hata: "Her turda j yeniden mi oluşuyor?"
+    // HAYIR. Yeni bir j DOĞMUYOR. Aynı j yerinde güncelleniyor.
+    //
+    // int j = 1;  satırı çalışınca :
+    //   - Stack'te 4 byte'lık TEK BİR KUTU açılır.
+    //   - Kutuya 1 yazılır.
+    //   - Bu kutunun bellek adresi main bitene kadar SABİT kalır.
+    //
+    //   Kutu j :  [1] → j++ → [2] → j++ → [3] → ... → [15] → j++ → [16]
+    //
+    // Her j++ işlemi (j = j + 1) şu 3 adımdır :
+    //   1) Aynı adresteki değeri OKU
+    //   2) Değere 1 EKLE
+    //   3) Sonucu AYNI ADRESE geri YAZ
+    // Yeni kutu açılmaz, eski kutu silinmez. Sadece içindeki sayı değişir.
+    //
+    // ── 6.2) BOŞ BAŞLANGIÇ KISMI NEYİ GÖSTERİR? ───────────────────
+    //
+    //   for (; j <= 15; j++)
+    //        ↑
+    //     BOŞ başlangıç → döngü KENDİ kutusunu açmaz,
+    //     hiçbir değeri sıfırlamaz, sadece dışarıdaki j'yi kullanır.
+    //     Bu yüzden döngü bitince j kaybolmaz ve 16 değeriyle durur.
+    //
+    // ── 6.3) i vs j : KUTUNUN KADERİ ───────────────────────────────
+    //
+    // ┌───────────────┬──────────────────────────┬──────────────────────────┐
+    // │               │ for (int i = 1; ...)     │ int j = 1; for (; ...)   │
+    // ├───────────────┼──────────────────────────┼──────────────────────────┤
+    // │ Kutu nerede   │ Döngüye ait scope'ta     │ main'in scope'unda       │
+    // │ açılır?       │ açılır                   │ açılır                   │
+    // ├───────────────┼──────────────────────────┼──────────────────────────┤
+    // │ Her turda ne  │ Aynı kutu yerinde        │ Aynı kutu yerinde        │
+    // │ olur?         │ artar                    │ artar                    │
+    // ├───────────────┼──────────────────────────┼──────────────────────────┤
+    // │ Döngü bitince │ } kapanınca KUTUNUN      │ Kutu yaşamaya devam      │
+    // │               │ KENDİSİ serbest bırakılır│ eder (main bitene kadar) │
+    // ├───────────────┼──────────────────────────┼──────────────────────────┤
+    // │ Son değer     │ 16 (ama erişilemez)      │ 16 (cout ile okunabilir) │
+    // └───────────────┴──────────────────────────┴──────────────────────────┘
+    //
+    // YANİ : İkisi de 16'ya ulaşır. Fark, 16'dan SONRA ne olduğundadır.
+    // "j'nin son degeri: 16" satırı, i'nin de gizlice ulaştığı ama bize
+    // gösteremediği değeri KANITLAR. j deneyinin asıl amacı budur.
+    //
+    // ── 6.4) "SON DEĞER 1 FAZLASI" HER ZAMAN DOĞRU DEĞİLDİR ───────
+    //
+    // GENEL KURAL : Sayaç, koşulu İLK KEZ BOZAN değerle sona erer.
+    // Sıra her zaman : ARTIR → KONTROL ET → GİR YA DA ÇIK.
+    //
+    //   i++ ile (1→15)   : i=15 → yazdır → i++ → 16 → (16<=15) YANLIŞ
+    //                      → son değer 16  (sınır + 1)
+    //
+    //   i += 2 ile (1→15): i=15 → yazdır → i+=2 → 17 → (17<=15) YANLIŞ
+    //                      → son değer 17  (16 hiç oluşmaz!)
+    //
+    // Yani "1 artmış hali" değil, "BİR ADIM artmış hali" demek doğrudur.
+    // Bu, ilk while örneğindeki "index 10 değil 11" bulgusunun birebir
+    // aynısıdır: aynı CPU mantığı, farklı sözdizimi.
+    //
+    // ── 6.5) C# / UNITY PARALELİ ───────────────────────────────────
+    //
+    //   int j (main'de)         ≈ sınıfın alanı (field). Metottan bağımsız
+    //                             yaşar, metot sadece değerini değiştirir.
+    //   for (int i...) içindeki i ≈ foreach (var x in ...) değişkeni.
+    //                             Sadece döngü süresince vardır.
+    //
+    // ── 6.6) PRATİK TUZAK VE MODERN C++ KURALI ─────────────────────
+    //
+    // j döngü bittikten sonra da erişilebilir olduğu için, ileride
+    // yanlışlıkla eski değeriyle (16) kullanıp HATA yapabilirsin.
+    //
+    // MODERN C++ KURALI : Değişkeni mümkün olan EN DAR SCOPE'ta tanımla.
+    //   → Varsayılan tercih : for (int i = 1; ...)
+    //   → j tarzı (dışarıda tanımlama) yalnızca döngü sonrası değere
+    //     GERÇEKTEN ihtiyaç duyduğunda kullanılır.
+
     return 0;
 }
 
