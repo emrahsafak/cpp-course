@@ -131,4 +131,91 @@ int main()
     // GÜNCELLEME OPERATÖRLERİ (i=5 iken):
     // ┌──────────┬────────────┬──────────────┐
     // │  Yazım   │   Anlamı   │    Sonuç     │
-    // ├──────────┼───
+    // ├──────────┼────────────┼──────────────┤
+    // │  i++     │  i = i+1   │  i → 6       │
+    // │  i += 2  │  i = i+2   │  i → 7       │
+    // │  i += 5  │  i = i+5   │  i → 10      │
+    // │  i -= 1  │  i = i-1   │  i → 4       │
+    // │  i *= 2  │  i = i*2   │  i → 10      │
+    // └──────────┴────────────┴──────────────┘
+
+
+
+    cout << endl << endl;
+
+    // ════════════════════════════════════════════════════════════
+    // BÖLÜM 4: i'NİN SON DEĞERİ (neden 16 görünmez?)
+    // ════════════════════════════════════════════════════════════
+    //
+    // i=15 → yazdır → i++ çalışır → i=16 → koşul kontrol edilir
+    //                                  ↑
+    //                           Bu değer OLUŞTU
+    //                           ama blok çalışmadı
+    //                           ve scope bitince yok edildi
+    //
+    // Fotoğraf analojisi:
+    // Fotoğraf çekip sonra kamerayı kırmak gibi 📸💥
+    // Kamera yok oldu — ama fotoğraf ekranda kaldı.
+    // cout her değeri O AN ekrana işler, i'nin sonraki kaderi onu etkilemez.
+    //
+    // ZAMAN ÇİZELGESİ:
+    // [1. an]  i=1  → cout çalışır → "1" ekranda  → i hâlâ canlı
+    // [2. an]  i=3  → cout çalışır → "3" ekranda  → i hâlâ canlı
+    // ...
+    // [8. an]  i=15 → cout çalışır → "15" ekranda → i hâlâ canlı
+    // [9. an]  i=17 → koşul YANLIŞ → döngü biter
+    // [10. an] } kapanır → i YOK EDİLİR ← ama ekran çoktan yazdı!
+
+
+
+    for (int i = 1; i <= 15; i++)   // i burada DOĞDU
+    {                                // ← i'nin scope'u BAŞLADI
+        cout << " " << i;
+    }                                // ← i'nin scope'u BİTTİ → i ÖLDÜ
+
+    // ❌ cout << i;   → DERLEME HATASI — i artık yok
+
+    int j = 1;                       // j'nin scope'u = main'in tamamı
+    // KANITLA — dışarıda tanımlarsan:
+
+    for (; j <= 15; j++)             // BAŞLANGIÇ BOŞ → j zaten tanımlı
+    {
+        cout << " " << j;
+    }                                // for bitti → ama j hâlâ canlı!
+
+    cout << endl;
+    cout << "j'nin son degeri: " << j << endl;   // ✓ ÇALIŞIR → j = 16
+
+    // ════════════════════════════════════════════════════════════
+    // BÖLÜM 5: SCOPE (KAPSAM) — ERİŞİM KURALI
+    // ════════════════════════════════════════════════════════════
+    //
+    // SORU: Dışarıdan erişemememizin sebebi ne?
+    //       → i'nin for içinde tanımlanmış olması mı?
+    //       → i'nin yok olmuş olması mı?
+    //
+    // CEVAP: İkisi aynı şey — biri sebep, diğeri sonuç.
+    //
+    // SEBEP  → i'yi for'un içinde tanımladık
+    // SONUÇ  → for bitince i otomatik yok edildi
+    //
+    // TANIMLAMA YERİ → YAŞAM SÜRESİ    → ERİŞİLEBİLİRLİK
+    //      ↓                ↓                   ↓
+    //  for içinde  →  for bitince ölür  →  dışarıdan ❌
+    //  main içinde →  main bitince ölür →  for içinden ✓
+
+    return 0;
+}
+
+// ╔══════════════════════════════════════════════════════════════╗
+// ║                     GENEL ÖZET                              ║
+// ╠══════════════════════════════════════════════════════════════╣
+// ║  1. for döngüsü 3 parçadan oluşur: BAŞLANGIÇ, KOŞUL,       ║
+// ║     GÜNCELLEME                                              ║
+// ║  2. Adım boyutunu i++ yerine i+=N yazarak değiştirebilirsin ║
+// ║  3. Döngünün son turunda i bir sonraki değere ulaşır ama    ║
+// ║     blok çalışmaz                                           ║
+// ║  4. cout değeri O AN ekrana yazar — i'nin sonraki kaderi    ║
+// ║     ekranı etkilemez                                        ║
+// ║  5. Scope: nerede tanımlandıysa orada yaşar, orada ölür     ║
+// ╚══════════════════════════════════════════════════════════════╝
