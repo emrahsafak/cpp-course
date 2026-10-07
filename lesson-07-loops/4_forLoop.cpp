@@ -306,9 +306,10 @@ int main()
 
 ===================================================================================================
 
-// ╔══════════════════════════════════════════════════════════════╗
-// ║   DEĞİŞKEN = SABİT ADRESLİ KUTU : TANIM, ATAMA, ÖMÜR, SCOPE  ║
-// ╚══════════════════════════════════════════════════════════════╝
+// ╔══════════════════════════════════════════════════════════════════════╗
+// ║  DEĞİŞKEN, BELLEK KONUMU, TANIM, ATAMA, ÖMÜR (LIFETIME), SCOPE        ║
+// ║  Standart: C++17                                                     ║
+// ╚══════════════════════════════════════════════════════════════════════╝
 
 
 // ##########################################################################
@@ -321,25 +322,43 @@ using namespace std;
 int main()
 {
     int j = 1;
-    cout << "1) tanim sonrasi        : " << j << "  adres: " << &j << endl;
+    cout << "1) tanim sonrasi          : " << j << "  adres: " << &j << endl;
 
     j = 50;
-    cout << "2) atama sonrasi        : " << j << endl;
+    cout << "2) atama sonrasi          : " << j << "  adres: " << &j << endl;
 
     j++;
-    cout << "3) j++ sonrasi          : " << j << endl;
+    cout << "3) j++ sonrasi            : " << j << "  adres: " << &j << endl;
 
-    for (; j <= 60; j++)
+    for (; j <= 55; j++)
     {
+        cout << "   dongu icinde           : " << j << "  adres: " << &j << endl;
     }
-    cout << "4) dongu sonrasi        : " << j << "  adres: " << &j << endl;
+    cout << "4) dongu sonrasi          : " << j << "  adres: " << &j << endl;
 
     {
         int j = 100;
-        cout << "5) ic scope j (golge)   : " << j << "  adres: " << &j << endl;
+        cout << "5) ic blok, int j (golge) : " << j << "  adres: " << &j << endl;
     }
 
-    cout << "6) dis j geri geldi     : " << j << "  adres: " << &j << endl;
+    cout << "6) dis j geri geldi       : " << j << "  adres: " << &j << endl;
+
+    {
+        j = 200;
+        cout << "7) ic blok, j = 200       : " << j << "  adres: " << &j << endl;
+    }
+
+    cout << "8) blok sonrasi           : " << j << "  adres: " << &j << endl;
+
+    for (int j = 0; j < 2; j++)
+    {
+        cout << "9) for(int j) golge       : " << j << "  adres: " << &j << endl;
+    }
+
+    cout << "10) for sonrasi dis j     : " << j << "  adres: " << &j << endl;
+
+    j = 5;
+    cout << "11) son atama             : " << j << "  adres: " << &j << endl;
 
     return 0;
 }
@@ -355,185 +374,348 @@ using namespace std;
 int main()
 {
     int j = 1;
-    cout << "1) tanim sonrasi        : " << j << "  adres: " << &j << endl;
+    cout << "1) tanim sonrasi          : " << j << "  adres: " << &j << endl;
 
-    // ════════════════════════════════════════════════════════════
-    // BÖLÜM A: DEĞİŞKEN NEDİR? (KUTU MODELİ)
-    // ════════════════════════════════════════════════════════════
+    // ════════════════════════════════════════════════════════════════
+    // BÖLÜM A: DEĞİŞKEN NEDİR? (NESNE + BELLEK KONUMU + İSİM)
+    // ════════════════════════════════════════════════════════════════
     //
-    // int j = 1;  satırı çalışınca CPU/stack şunu yapar:
-    //   1) Stack'te 4 byte'lık (int boyutu) boş bir alan AYIRIR.
-    //   2) O alana 1 değerini YAZAR.
-    //   3) Bu alanın bellek adresi main bitene kadar SABİT kalır.
+    // int j = 1;  satırı bir TANIM'dır (definition) ve aynı anda
+    // İLKLENDİRME'dir (initialization). Çalışma zamanında şunlar olur:
     //
-    //   Bellek görünümü (adres örnek amaçlıdır):
+    //   1) Stack'te (otomatik depolama, automatic storage duration)
+    //      sizeof(int) = genelde 4 byte'lık bir BELLEK KONUMU ayrılır.
+    //   2) Bu konumda bir int NESNESİ (object) oluşur.
+    //   3) Nesneye ilk değer olarak 1 yazılır.
+    //   4) Nesnenin BELLEK ADRESİ, ömrü boyunca SABİT kalır.
     //
-    //   adres 0x1000 :  [ 1 ]      ← "j" dediğimiz şey aslında bu kutudur
+    //   Üç kavramı ayır:
+    //     İSİM (identifier) : "j"  → sadece kaynak koddadır, programcı içindir
+    //     NESNE (object)    : bellekte yaşayan 4 byte'lık int
+    //     ADRES (address)   : o nesnenin bellekteki konumu (örn. 0x7ffc...a4)
     //
-    // "j" ismi, programcı için bir etikettir. Derleyici bu ismi
-    // adrese çevirir. Program çalışırken "j" diye bir isim kalmaz,
-    // sadece adresler vardır.
+    //   Derleyici, "j" ismini derleme zamanında bir adrese çevirir.
+    //   Program çalışırken "j" diye bir isim yoktur, sadece adres vardır.
     //
-    // &j  → "j'nin adresi" operatörü (adres-of). Kutunun nerede
-    //       durduğunu ekrana yazdırır. (Pointer konusunda detaylanacak.)
+    // &j  → adres-of operatörü. j nesnesinin bellek adresini döndürür.
+    //       (Dönüş türü int*, yani pointer. Detayı pointer konusunda.)
     //
-    // C# paralelli: int j = 1; yerel değişkeni de stack'te yaşar.
-    // Fark: C++'ta bu kutunun ömrünü scope belirler, GC yoktur.
+    // C# paraleli: Metot içi yerel değişken de stack'te yaşar. Fark: C++'ta
+    // ömrü scope belirler, garbage collector yoktur.
     //
-    // ════════════════════════════════════════════════════════════
+    // ════════════════════════════════════════════════════════════════
 
     j = 50;
-    cout << "2) atama sonrasi        : " << j << endl;
+    cout << "2) atama sonrasi          : " << j << "  adres: " << &j << endl;
 
-    // ════════════════════════════════════════════════════════════
+    // ════════════════════════════════════════════════════════════════
     // BÖLÜM B: TANIM (DEFINITION) vs ATAMA (ASSIGNMENT)
-    // ════════════════════════════════════════════════════════════
+    // ════════════════════════════════════════════════════════════════
     //
-    // En kritik ayrım: SATIRIN BAŞINDA TÜR (int) VAR MI?
+    // En kritik ayrım: satırın başında TÜR (int) VAR MI?
     //
-    //   int j = 1;   → TÜR VAR   → TANIM  → YENİ KUTU AÇILIR
-    //   j = 50;      → TÜR YOK   → ATAMA  → MEVCUT KUTUNUN ÜSTÜNE YAZILIR
+    //   int j = 1;  → tür VAR → TANIM + İLKLENDİRME → yeni nesne oluşur
+    //   j = 50;     → tür YOK → ATAMA              → mevcut nesne değişir
     //
-    // j = 50; çalışınca :
-    //   0x1000 :  [ 1 ]  →  [ 50 ]
-    //   Eski değer (1) bir yerde SAKLANMAZ, ezilir ve kaybolur.
-    //   Kutu aynı, adres aynı, sadece içindeki sayı değişti.
+    // j = 50; çalışınca ADRES DEĞİŞMEZ, sadece o adresteki değer değişir:
     //
-    // ════════════════════════════════════════════════════════════
+    //   adres A :  1  →  50
+    //
+    // Eski değer (1) başka bir yere kaydedilmez, üzerine yazılır ve kaybolur.
+    // Çıktıda satır 1 ve satır 2'nin adresleri BİREBİR AYNIDIR.
+    //
+    // ════════════════════════════════════════════════════════════════
 
     j++;
-    cout << "3) j++ sonrasi          : " << j << endl;
+    cout << "3) j++ sonrasi            : " << j << "  adres: " << &j << endl;
 
-    // ════════════════════════════════════════════════════════════
-    // BÖLÜM C: j++ İÇERİDE NE YAPAR?
-    // ════════════════════════════════════════════════════════════
+    // ════════════════════════════════════════════════════════════════
+    // BÖLÜM C: j++ BELLEKTE NE YAPAR?
+    // ════════════════════════════════════════════════════════════════
     //
-    // j++  ≡  j = j + 1  ve 3 adımdır:
-    //   1) 0x1000 adresindeki değeri OKU      (50)
-    //   2) Değere 1 EKLE                      (51)
-    //   3) Sonucu AYNI ADRESE geri YAZ        (0x1000 = 51)
+    // j++  ≡  j = j + 1  ve CPU düzeyinde 3 adımdır:
+    //   1) A adresindeki değeri bir yazmaca (register) OKU     (50)
+    //   2) Yazmaçtaki değere 1 EKLE                            (51)
+    //   3) Sonucu AYNI A adresine geri YAZ                     (51)
     //
-    // Yeni kutu açılmaz. Eski kutu silinmez. Sadece içerik değişir.
+    // Yeni nesne oluşmaz, eski nesne yok edilmez; yalnızca değer değişir.
+    // (Derleyici optimizasyonu j'yi tamamen yazmaçta tutabilir, ama
+    // &j aldığımız için C++ semantiği "j'nin bir adresi var" der.)
     //
-    // ════════════════════════════════════════════════════════════
+    // ════════════════════════════════════════════════════════════════
 
-    for (; j <= 60; j++)
+    for (; j <= 55; j++)
     {
+        cout << "   dongu icinde           : " << j << "  adres: " << &j << endl;
     }
-    cout << "4) dongu sonrasi        : " << j << "  adres: " << &j << endl;
+    cout << "4) dongu sonrasi          : " << j << "  adres: " << &j << endl;
 
-    // ════════════════════════════════════════════════════════════
-    // BÖLÜM D: DÖNGÜ j'Yİ SIFIRLAMAZ, KALDIĞI YERDEN DEVAM EDER
-    // ════════════════════════════════════════════════════════════
+    // ════════════════════════════════════════════════════════════════
+    // BÖLÜM D: FOR DÖNGÜSÜ j'Yİ SIFIRLAMAZ, KALDIĞI YERDEN DEVAM EDER
+    // ════════════════════════════════════════════════════════════════
     //
-    // for (; j <= 60; j++)
+    // for (; j <= 55; j++)
     //      ↑
-    //   BAŞLANGIÇ BOŞ → döngü kendi kutusunu AÇMAZ, değer ATAMAZ.
-    //   Sadece main'deki mevcut j'yi kullanır.
+    //   BAŞLANGIÇ BOŞ → tanım YOK, atama YOK. Döngü yeni nesne
+    //   oluşturmaz; main'deki mevcut j nesnesini kullanır.
     //
-    // Döngü başladığında j = 51 olduğu için :
-    //   51 → 52 → 53 → ... → 60 → 61
-    //   (61 <= 60) YANLIŞ → döngü biter.
-    //   Döngü 51'den 60'a kadar 10 tur döner (1'den değil!).
+    // Döngü başlarken j = 51 olduğu için GÖVDE 5 KEZ çalışır (1'den değil,
+    // 51'den başladı). Gövdenin gördüğü değerler: 51, 52, 53, 54, 55.
     //
-    // Döngü bitince j = 61 ve ADRES HÂLÂ AYNI (satır 1 ile satır 4'ün
-    // adresleri birebir aynı çıkar). Bu, "hep aynı kutu" iddiasının
-    // çalışan kanıtıdır.
+    // TUR TUR İZLEME (kontrol → gövde → j++):
+    //   j=51 → (51<=55) DOĞRU → gövde: cout 51 → j++ → j=52
+    //   j=52 → (52<=55) DOĞRU → gövde: cout 52 → j++ → j=53
+    //   j=53 → (53<=55) DOĞRU → gövde: cout 53 → j++ → j=54
+    //   j=54 → (54<=55) DOĞRU → gövde: cout 54 → j++ → j=55
+    //   j=55 → (55<=55) DOĞRU → gövde: cout 55 → j++ → j=56
+    //   j=56 → (56<=55) YANLIŞ → GÖVDEYE GİRİLMEZ → döngü biter
     //
-    // ZAMAN ÇİZELGESİ (kutunun içeriği) :
-    //   satır 1 :  [1]
-    //   satır 2 :  [50]
-    //   satır 3 :  [51]
-    //   döngü   :  [51] → [52] → ... → [60] → [61]
-    //   satır 4 :  cout [61] okur
+    // !! DİKKAT !! 56 değerinde gövde ÇALIŞMAZ. 56 sadece son j++ ile
+    // nesneye yazılır ve koşul kontrolünde elenir. Bu yüzden döngü İÇİNDEKİ
+    // cout hiçbir zaman 56 görmez.
     //
-    // CPU bu satırları YUKARIDAN AŞAĞIYA SIRAYLA yürütür; her satır,
-    // bir önceki satırın kutuda bıraktığı değerden devam eder.
+    // Döngü bitince j nesnesi ölmez (main'in scope'una aittir), içinde
+    // 56 kalır. Döngü SONRASINDAKİ cout (satır 4) bu yüzden 56 yazar.
     //
-    // ════════════════════════════════════════════════════════════
+    // Döngü içinde de, döngü sonrasında da ADRES AYNIDIR. "Hep aynı nesne"
+    // iddiasının çalışan kanıtı budur.
+    //
+    // NESNENİN ZAMAN İÇİNDEKİ DEĞERİ VE KİMİN OKUDUĞU:
+    //   satır 1          : nesne = 1
+    //   satır 2          : nesne = 50
+    //   satır 3          : nesne = 51
+    //   gövde (5 tur)    : cout 51, 52, 53, 54, 55 okur
+    //   son j++          : nesne = 56 (gövde bunu görmez)
+    //   koşul kontrolü   : (56<=55) YANLIŞ → döngü biter
+    //   satır 4          : cout 56 okur (döngü DIŞINDA)
+    //
+    // CPU satırları YUKARIDAN AŞAĞIYA sırayla yürütür; her satır, bir
+    // önceki satırın bıraktığı değerden devam eder.
+    //
+    // SON DEĞER KURALI: Sayaç, koşulu İLK KEZ BOZAN değerle sona erer.
+    // Sıra: ARTIR → KONTROL ET → GİR YA DA ÇIK.
+    //
+    // ════════════════════════════════════════════════════════════════
 
     {
         int j = 100;
-        cout << "5) ic scope j (golge)   : " << j << "  adres: " << &j << endl;
+        cout << "5) ic blok, int j (golge) : " << j << "  adres: " << &j << endl;
     }
 
-    // ════════════════════════════════════════════════════════════
-    // BÖLÜM E: GÖLGELEME (SHADOWING) — İÇ SCOPE'TA YENİDEN TANIM
-    // ════════════════════════════════════════════════════════════
+    // ════════════════════════════════════════════════════════════════
+    // BÖLÜM E: GÖLGELEME (SHADOWING / NAME HIDING)
+    // ════════════════════════════════════════════════════════════════
     //
-    // Burada satırın başında TÜR (int) var → bu bir TANIM → YENİ KUTU.
+    // İç blokta satırın başında TÜR var → bu bir TANIM → YENİ NESNE.
     //
-    //   Dış j :  adres 0x1000 :  [ 61 ]   (hâlâ yaşıyor, dokunulmadı)
-    //   İç  j :  adres 0x1004 :  [ 100 ]  (yeni kutu, FARKLI adres)
+    //   Dış j : adres A  → değeri 56  (yaşıyor, dokunulmadı)
+    //   İç  j : adres B  → değeri 100 (yeni nesne, FARKLI adres)
     //
-    // İsim aynı, kutular AYRI. Derleyici iç scope'ta "j" ismini EN
-    // YAKIN tanıma bağlar; dış j bu sürede "gölgelenmiş" olur.
-    // Çıktıda iki adresin FARKLI olduğunu göreceksin.
+    // İsim aynı, nesneler AYRI. Derleyici iç blokta "j" ismini EN YAKIN
+    // tanıma bağlar; dış j'nin ismi bu blokta GİZLENİR (name hiding).
+    // Dış nesne ise bellekte yaşamaya devam eder, sadece bu blokta o
+    // isimle ona ulaşılamaz.
     //
-    // İç scope'un } parantezi kapanınca iç j'nin kutusu serbest
-    // bırakılır, dış j'nin kutusuna hiçbir şey olmaz.
+    // İç blok } ile kapanınca iç j nesnesinin ömrü biter (yok edilir).
+    // Dış j'ye hiçbir şey olmaz.
     //
-    // !! TUZAK !! Gölgeleme sessiz bir hata kaynağıdır. Dış j'yi
-    // güncellediğini sanırken iç j'yi güncellersin. Derleyici varsayılan
-    // olarak uyarmaz; -Wshadow bayrağı ile uyarır.
+    // !! TUZAK !! Dış j'yi güncellediğini sanırken iç j'yi güncellersin.
+    // Derleyici varsayılan olarak uyarmaz; -Wshadow bayrağı ile uyarır.
     // Pratik kural: iç scope'ta dış değişkenle AYNI ismi kullanma.
     //
-    // ════════════════════════════════════════════════════════════
+    // ════════════════════════════════════════════════════════════════
 
-    cout << "6) dis j geri geldi     : " << j << "  adres: " << &j << endl;
+    cout << "6) dis j geri geldi       : " << j << "  adres: " << &j << endl;
 
-    // ════════════════════════════════════════════════════════════
-    // BÖLÜM F: ÖMÜR (LIFETIME) VE SCOPE — TEK KURAL
-    // ════════════════════════════════════════════════════════════
+    // ════════════════════════════════════════════════════════════════
+    // BÖLÜM F: DIŞ j NEDEN "GERİ GELDİ"?
+    // ════════════════════════════════════════════════════════════════
     //
-    // KURAL : Bir değişkenin kutusu, TANIMLANDIĞI SATIRDAN, o satırı
-    //         içeren { } bloğunun KAPANIŞINA kadar yaşar.
+    // Hiç gitmemişti. Dış j nesnesinin ömrü main'in sonuna kadardır.
+    // İç blokta sadece İSMİ gizlenmişti. Blok bitince isim gizliliği
+    // kalktı. Değer hâlâ 56, adres hâlâ A.
     //
-    //   Tanımlandığı yer   → Kutunun ömrü        → Erişim
-    //   ─────────────────────────────────────────────────────────
-    //   main içinde         → main bitince ölür   → main'in her yerinden ✓
-    //   for (int i...) içi  → for bitince ölür    → dışarıdan ❌
-    //   { } iç bloğu        → } kapanınca ölür    → dışarıdan ❌
+    // ════════════════════════════════════════════════════════════════
+
+    {
+        j = 200;
+        cout << "7) ic blok, j = 200       : " << j << "  adres: " << &j << endl;
+    }
+
+    // ════════════════════════════════════════════════════════════════
+    // BÖLÜM G: İÇ BLOKTA TÜRSÜZ ATAMA → DIŞ NESNE DEĞİŞİR
+    // ════════════════════════════════════════════════════════════════
     //
-    // Satır 6'da dış j 61 olarak geri geldi çünkü hiç ölmemişti:
-    // ömrü main'in sonuna kadardır.
+    // Süslü parantez YENİ NESNE OLUŞTURMAZ. Sadece yeni bir SCOPE
+    // sınırı çizer. Yeni nesneyi oluşturan şey TANIM'dır (int j).
     //
-    // ════════════════════════════════════════════════════════════
+    // Burada tür yok → atama → derleyici ismi çözümler (name lookup):
+    //   1) Önce en içteki scope'a bakar: j tanımı var mı? YOK.
+    //   2) Bir dış scope'a (main'in gövdesi) çıkar: j tanımı VAR → bağla.
+    //
+    // Bu çözümleme DERLEME ZAMANINDA yapılır. Çalışırken CPU "dışarı
+    // çıkmaz"; doğrudan A adresine 200 yazar. Çıktıda adres, satır 1'deki
+    // ile AYNIDIR.
+    //
+    // ÖZET KARŞILAŞTIRMA:
+    //   { j = 200;     }  → dış nesne değişir, blok sonrası da 200 görürsün
+    //   { int j = 200; }  → yeni nesne, blok sonunda yok olur, dış j etkilenmez
+    //
+    // ════════════════════════════════════════════════════════════════
+
+    cout << "8) blok sonrasi           : " << j << "  adres: " << &j << endl;
+
+    // 8. satır: 200 yazar. Kalıcı değişiklik, çünkü dış nesne güncellendi.
+
+    for (int j = 0; j < 2; j++)
+    {
+        cout << "9) for(int j) golge       : " << j << "  adres: " << &j << endl;
+    }
+
+    // ════════════════════════════════════════════════════════════════
+    // BÖLÜM H: for (int j ...) = İÇ BLOKTAKİ int j İLE AYNI ŞEY
+    // ════════════════════════════════════════════════════════════════
+    //
+    // for'un başlangıç kısmına TÜR yazınca (int j = 0), bu bir TANIM olur.
+    // O j, for'un kendi scope'una aittir ve dış j'yi GİZLER.
+    //
+    // Fark for ile süslü parantez arasında DEĞİL, TÜR yazıp yazmamadadır:
+    //
+    //   for (; j <= 55; j++)       → tür yok → dış nesne kullanılır
+    //   for (int j = 0; ...)       → tür var → yeni nesne, farklı adres
+    //   { int j = 100; }           → tür var → yeni nesne, farklı adres
+    //   { j = 100; }               → tür yok → dış nesne kullanılır
+    //
+    // Çıktıda satır 9'un adresi, dış j'nin adresinden FARKLIDIR. Döngü
+    // bitince bu j nesnesinin ömrü biter.
+    //
+    // ════════════════════════════════════════════════════════════════
+
+    cout << "10) for sonrasi dis j     : " << j << "  adres: " << &j << endl;
+
+    // Dış j hâlâ 200 ve adres A. for içindeki gölge j onu etkilemedi.
+
+    j = 5;
+    cout << "11) son atama             : " << j << "  adres: " << &j << endl;
+
+    // ════════════════════════════════════════════════════════════════
+    // BÖLÜM I: AYNI SCOPE'TA İKİNCİ TANIM → DERLEME HATASI
+    // ════════════════════════════════════════════════════════════════
+    //
+    // Yukarıdaki j = 5; yerine şunu yazsaydık:
+    //
+    //   int j = 5;      // ❌ error: redefinition of 'int j'
+    //
+    // Sebep: Bu satır, ilk int j = 1; ile AYNI scope'tadır (main'in
+    // gövdesi). Bir scope içinde aynı isim yalnızca BİR KEZ tanımlanabilir.
+    // Derleyici programı hiç derlemez.
+    //
+    //   Farklı (iç) scope'ta aynı isim → ✓ izinli (gölgeleme)
+    //   Aynı scope'ta aynı isim        → ❌ derleme hatası
+    //
+    // "Süslü parantezin dışı" yeni bir scope DEĞİLDİR; zaten j'nin
+    // yaşadığı scope'tur. Yeni scope ancak yeni bir { } açınca oluşur.
+    //
+    // PRATİK TEST: j'yi tanımlayan satırla aynı { } seviyesinde misin?
+    // Evet → ikinci tanım hata. Bir { } daha içeride misin? → serbest.
+    //
+    // ════════════════════════════════════════════════════════════════
 
     return 0;
 }
 
-// ╔══════════════════════════════════════════════════════════════╗
-// ║              BÖLÜM G: DERLEYİCİ MÜ, CPU MU?                  ║
-// ╠══════════════════════════════════════════════════════════════╣
-// ║  Sık yapılan zihinsel hata: "Derleyici satır satır çalışıp,  ║
-// ║  döngüden çıkıp main'e dönerek j'yi güncelliyor."            ║
-// ║                                                              ║
-// ║  GERÇEK:                                                     ║
-// ║  • DERLEYİCİ (compile time): kodu BİR KEZ makine koduna      ║
-// ║    çevirir ve biter. Program çalışırken ortada YOKTUR.       ║
-// ║    Scope kuralları (i dışarıdan görünmez) SADECE derleyicinin║
-// ║    isim kontrolüdür.                                         ║
-// ║  • CPU (runtime): derlenmiş talimatları sırayla yürütür.     ║
-// ║    "Yukarı çıkma" denen şey, CPU'nun bir jump (atlama)       ║
-// ║    talimatıyla geri bir talimata gitmesidir.                 ║
-// ║  • for döngüsü main'in DIŞINDA ayrı bir yer değildir; main'in║
-// ║    gövdesinin parçasıdır. { } sadece scope sınırıdır, CPU'yu ║
-// ║    başka yere taşımaz. Hepsi aynı stack çerçevesindedir.     ║
-// ║  • j++ çalışırken CPU "main'e çık" demez; doğrudan j'nin     ║
-// ║    ADRESİNE gider: oku → 1 ekle → aynı adrese yaz.           ║
-// ╚══════════════════════════════════════════════════════════════╝
+// ╔══════════════════════════════════════════════════════════════════════╗
+// ║  BÖLÜM J: ÖMÜR (LIFETIME) VE SCOPE — TEK KURAL                        ║
+// ╠══════════════════════════════════════════════════════════════════════╣
+// ║  Otomatik bir nesnenin ömrü, TANIMLANDIĞI satırdan, o satırı         ║
+// ║  içeren { } bloğunun KAPANIŞINA kadardır.                            ║
+// ║                                                                      ║
+// ║  Tanımlandığı yer     → Ömrü             → Erişim                    ║
+// ║  main içinde          → main bitince      → main'in her yerinden ✓   ║
+// ║  for (int i...)       → for bitince       → dışarıdan ❌             ║
+// ║  { } iç bloğu         → } kapanınca       → dışarıdan ❌             ║
+// ║                                                                      ║
+// ║  Kavram ayrımı:                                                      ║
+// ║  • SCOPE   = bir ismin kaynak kodda GEÇERLİ olduğu bölge             ║
+// ║              (derleme zamanı kavramı)                                ║
+// ║  • LIFETIME= bir nesnenin bellekte YAŞADIĞI süre                     ║
+// ║              (çalışma zamanı kavramı)                                ║
+// ║  Gölgelemede ikisi ayrışır: dış j'nin scope'u iç blokta kesintiye    ║
+// ║  uğrar (isim gizlenir) ama lifetime'ı kesilmez (nesne yaşar).        ║
+// ╚══════════════════════════════════════════════════════════════════════╝
 
-// ╔══════════════════════════════════════════════════════════════╗
-// ║                     GENEL ÖZET                               ║
-// ╠══════════════════════════════════════════════════════════════╣
-// ║  1. Değişken = stack'te SABİT ADRESLİ bir kutu.              ║
-// ║  2. int j = ...  (tür var)   → TANIM  → yeni kutu açar.      ║
-// ║  3. j = ...      (tür yok)   → ATAMA  → mevcut kutuya yazar. ║
-// ║  4. Her yazma eski değeri EZER; eski değer saklanmaz.        ║
-// ║  5. Kutu, tanımlandığı { } kapanana kadar yaşar.             ║
-// ║  6. Satırlar sırayla yürür; her satır önceki değerden devam. ║
-// ║  7. Döngünün başlangıç kısmı boşsa j SIFIRLANMAZ.            ║
-// ║  8. İç scope'ta aynı isimle tanım = gölgeleme (yeni kutu).   ║
-// ║  9. Scope = derleyici kuralı, kutu/adres = çalışma zamanı.   ║
-// ╚══════════════════════════════════════════════════════════════╝
+// ╔══════════════════════════════════════════════════════════════════════╗
+// ║  BÖLÜM K: DERLEYİCİ Mİ, CPU MU?                                       ║
+// ╠══════════════════════════════════════════════════════════════════════╣
+// ║  Sık yapılan zihinsel hata: "Derleyici satır satır çalışıp döngüden  ║
+// ║  çıkıp main'e dönerek j'yi güncelliyor."                             ║
+// ║                                                                      ║
+// ║  GERÇEK:                                                             ║
+// ║  • DERLEYİCİ (compile time): kodu BİR KEZ makine koduna çevirir ve   ║
+// ║    biter. Program çalışırken ortada YOKTUR. İsim çözümleme (name     ║
+// ║    lookup), scope kontrolü, redefinition hatası hep derleme zamanı   ║
+// ║    işleridir.                                                        ║
+// ║  • CPU (runtime): derlenmiş talimatları sırayla yürütür. Döngüdeki   ║
+// ║    "yukarı çıkma", CPU'nun bir JUMP talimatıyla program sayacını     ║
+// ║    (instruction pointer) geri bir talimata ayarlamasıdır.            ║
+// ║  • for döngüsü main'in DIŞINDA ayrı bir yer değildir; main'in        ║
+// ║    gövdesinin parçasıdır. { } sadece scope sınırıdır, CPU'yu başka   ║
+// ║    yere taşımaz. Hepsi aynı stack çerçevesindedir (stack frame).     ║
+// ║  • j++ çalışırken CPU "main'e çık" demez; doğrudan nesnenin          ║
+// ║    ADRESİNE gider: oku → 1 ekle → aynı adrese yaz.                   ║
+// ╚══════════════════════════════════════════════════════════════════════╝
+
+// ╔══════════════════════════════════════════════════════════════════════╗
+// ║                           GENEL ÖZET                                 ║
+// ╠══════════════════════════════════════════════════════════════════════╣
+// ║  1. Değişken = isim + nesne + bellek adresi. İsim sadece derleme     ║
+// ║     zamanında vardır, çalışırken sadece adres kalır.                 ║
+// ║  2. int j = ...  (tür var) → TANIM + İLKLENDİRME → yeni nesne.       ║
+// ║  3. j = ...      (tür yok) → ATAMA → mevcut nesnenin değeri değişir. ║
+// ║  4. Her atama eski değerin ÜZERİNE yazar; eski değer saklanmaz.      ║
+// ║  5. Nesnenin adresi, ömrü boyunca SABİTTİR; sadece değeri değişir.   ║
+// ║  6. Nesne, tanımlandığı { } kapanana kadar yaşar (lifetime).         ║
+// ║  7. Satırlar yukarıdan aşağıya sırayla yürür; her satır bir öncekinin║
+// ║     bıraktığı değerden devam eder.                                   ║
+// ║  8. for'un başlangıcı boşsa j SIFIRLANMAZ, kalınan değerden devam.   ║
+// ║  9. Döngü gövdesi son değerde (56) ÇALIŞMAZ; 56'yı yalnızca döngü    ║
+// ║     SONRASI cout görür.                                              ║
+// ║ 10. { } yeni nesne oluşturmaz; yeni nesneyi TANIM (tür yazmak) yapar.║
+// ║ 11. İç scope'ta aynı isimle tanım = gölgeleme (farklı adres).        ║
+// ║ 12. İç scope'ta türsüz atama = isim dışarıda aranır, dış nesne       ║
+// ║     değişir.                                                         ║
+// ║ 13. Aynı scope'ta ikinci tanım = redefinition derleme hatası.        ║
+// ║ 14. Scope = derleme zamanı, lifetime/adres = çalışma zamanı.         ║
+// ║ 15. Modern C++: değişkeni mümkün olan EN DAR scope'ta tanımla ve     ║
+// ║     gölgelemeden kaçın (-Wshadow ile derle).                         ║
+// ╚══════════════════════════════════════════════════════════════════════╝
+
+// ╔══════════════════════════════════════════════════════════════════════╗
+// ║  BEKLENEN ÇIKTI (adresler makineye göre değişir; önemli olan         ║
+// ║  hangilerinin EŞİT olduğudur)                                        ║
+// ╠══════════════════════════════════════════════════════════════════════╣
+// ║  1) tanim sonrasi          : 1    adres: 0x7ffc...a4   ← A           ║
+// ║  2) atama sonrasi          : 50   adres: 0x7ffc...a4   ← A           ║
+// ║  3) j++ sonrasi            : 51   adres: 0x7ffc...a4   ← A           ║
+// ║     dongu icinde           : 51   adres: 0x7ffc...a4   ← A           ║
+// ║     dongu icinde           : 52 / 53 / 54  (hepsi A)                 ║
+// ║     dongu icinde           : 55   adres: 0x7ffc...a4   ← A           ║
+// ║  4) dongu sonrasi          : 56   adres: 0x7ffc...a4   ← A           ║
+// ║  5) ic blok, int j (golge) : 100  adres: 0x7ffc...a0   ← B (FARKLI)  ║
+// ║  6) dis j geri geldi       : 56   adres: 0x7ffc...a4   ← A           ║
+// ║  7) ic blok, j = 200       : 200  adres: 0x7ffc...a4   ← A           ║
+// ║  8) blok sonrasi           : 200  adres: 0x7ffc...a4   ← A           ║
+// ║  9) for(int j) golge       : 0    adres: 0x7ffc...a0   ← C (FARKLI)  ║
+// ║  9) for(int j) golge       : 1    adres: 0x7ffc...a0   ← C           ║
+// ║  10) for sonrasi dis j     : 200  adres: 0x7ffc...a4   ← A           ║
+// ║  11) son atama             : 5    adres: 0x7ffc...a4   ← A           ║
+// ║                                                                      ║
+// ║  NOT: B ve C aynı adreste çıkabilir (biri ölünce stack alanı yeniden ║
+// ║  kullanılır). Sorun değil: ömürleri çakışmıyor. KURAL: ömürleri      ║
+// ║  çakışan iki nesne aynı adreste olamaz; A hiçbir zaman B veya C ile  ║
+// ║  aynı olmaz.                                                         ║
+// ║                                                                      ║
+// ║  DERLEME: g++ -std=c++17 -Wshadow dosya.cpp                          ║
+// ║  (5. ve 9. satırlar için gölgeleme uyarısı görürsün; örnekler        ║
+// ║  bilerek öyle yazıldı, gerçek projede böyle yazma.)                  ║
+// ╚══════════════════════════════════════════════════════════════════════╝
