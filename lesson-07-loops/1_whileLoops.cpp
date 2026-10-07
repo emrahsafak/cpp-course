@@ -1,10 +1,10 @@
 // ##########################################################################
-//  BOLUM 1 — ORIJINAL KODLAR (SADE HALI)
+//  ORNEK A — TEMEL WHILE DONGUSU
 // ##########################################################################
 
 
 // ==========================================================================
-//  KOD A — Temel while dongusu
+//  A-1) SADE KOD (tamami, yorumsuz)
 // ==========================================================================
 
 #include <iostream>
@@ -25,40 +25,9 @@ int main()
     
 }
 
-// <=================================================================================================> 
 
 // ==========================================================================
-//  KOD B — Ayni while dongusu (kod kismi)
-// ==========================================================================
-
-#include <iostream>
-using namespace std;
-
-int main()
-{
-    int index = 3;
-
-    while (index <= 10)
-    {
-        cout << " Index degeri : " << index << endl;
-
-        index++;
-    }
-
-    cout << endl << " Dongu bitti!" << endl;
-    cout << " Dongu sonrasi index degeri : " << index << endl;
-
-    return 0;
-}
-
-
-// ##########################################################################
-//  BOLUM 2 — ACIKLAMALAR (KODUN ACIKLAMALI HALI)
-// ##########################################################################
-
-
-// ==========================================================================
-//  KOD A — ACIKLAMALARI
+//  A-2) ACIKLAMALI HALI (aciklama, anlattigi kodun ALTINDA)
 // ==========================================================================
 
 #include <iostream>
@@ -66,6 +35,13 @@ using namespace std;
 
 int main()
 {
+	int index = 3;
+
+	while (index <= 10)
+	{
+		cout << " Index degeri :" << index << endl;
+		index++;
+	}
 	/* 
 	   while dongusu(Loop) :
 
@@ -79,26 +55,48 @@ int main()
 	     // yapilacak islem 2
 	     // yapilacak islem 3
 	   }
-       	
 	*/ 
-	
-	int index = 3;
-
-	while (index <= 10)
-	{
-		cout << " Index degeri :" << index << endl;
-		index++;
-	}
 	 
 	cout << endl << " dongu bitti ";
 	cout << " Index degeri :" << index << endl;
     
 }
 
+
 // <=================================================================================================> 
 
+
+// ##########################################################################
+//  ORNEK B — WHILE DONGUSU: DERLEYICI VE CALISMA ZAMANI DAVRANISI
+// ##########################################################################
+
+
 // ==========================================================================
-//  KOD B — ACIKLAMALARI
+//  B-1) SADE KOD (tamami, yorumsuz)
+// ==========================================================================
+
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    int index = 3;
+
+    while (index <= 10)
+    {
+        cout << " Index degeri : " << index << endl;
+        index++;
+    }
+
+    cout << endl << " Dongu bitti!" << endl;
+    cout << " Dongu sonrasi index degeri : " << index << endl;
+
+    return 0;
+}
+
+
+// ==========================================================================
+//  B-2) ACIKLAMALI HALI (aciklama, anlattigi kodun ALTINDA)
 // ==========================================================================
 
 #include <iostream>
@@ -133,6 +131,8 @@ using namespace std;
 
 int main()
 {
+    int index = 3;
+
     // -----------------------------------------------------------------------
     // ADIM 1 — DEGISKEN BASLATMA (Variable Initialization)
     // -----------------------------------------------------------------------
@@ -143,9 +143,9 @@ int main()
     //   [ index = 3 ]  ← stack uzerinde
     // -----------------------------------------------------------------------
 
-    int index = 3;
 
-
+    while (index <= 10)
+    {
     // -----------------------------------------------------------------------
     // ADIM 2 — WHILE KOSULUNUN ILK KONTROLU (First Condition Check)
     // -----------------------------------------------------------------------
@@ -168,8 +168,8 @@ int main()
     // "ziplamasi"ndan (jump) baska bir sey degildir.
     // -----------------------------------------------------------------------
 
-    while (index <= 10)
-    {
+        cout << " Index degeri : " << index << endl;
+
         // -------------------------------------------------------------------
         // ADIM 3 — DONGU GOVDESI (Loop Body) — Her iterasyonda calisir
         // -------------------------------------------------------------------
@@ -177,8 +177,7 @@ int main()
         // endl satiri sonlandirir ve tamponu (buffer) bosaltir.
         // -------------------------------------------------------------------
 
-        cout << " Index degeri : " << index << endl;
-
+        index++;
 
         // -------------------------------------------------------------------
         // ADIM 4 — INDEX ARTIRILIR (Increment)
@@ -187,9 +186,6 @@ int main()
         // Bu satir her iterasyonun SONUNDA calisir.
         // Artirmadan SONRA CPU tekrar yukari donup kosulu kontrol eder.
         // -------------------------------------------------------------------
-
-        index++;
-
 
         // -------------------------------------------------------------------
         // ITERASYON TABLOSU (Iteration Table) :
@@ -209,7 +205,6 @@ int main()
         // -------------------------------------------------------------------
     }
 
-
     // -----------------------------------------------------------------------
     // ADIM 5 — KOSUL BOZULUR, DONGU CIKISI (Condition Fails — Loop Exits)
     // -----------------------------------------------------------------------
@@ -219,6 +214,9 @@ int main()
     // Bir sonraki satirdan devam eder.
     // -----------------------------------------------------------------------
 
+    cout << endl << " Dongu bitti!" << endl;
+    cout << " Dongu sonrasi index degeri : " << index << endl;
+    // Cikti → 11  (10 degil!)
 
     // -----------------------------------------------------------------------
     // ADIM 6 — DONGU SONRASI CALISMA (Post-Loop Execution)
@@ -237,11 +235,6 @@ int main()
     // Cikis degeri her zaman sinirin bir adim OTESINDEDIR.
     // -----------------------------------------------------------------------
 
-    cout << endl << " Dongu bitti!" << endl;
-    cout << " Dongu sonrasi index degeri : " << index << endl;
-    // Cikti → 11  (10 degil!)
-
-
     // -----------------------------------------------------------------------
     // EKSTRA : SIFIR ITERASYON DURUMU (Zero Iteration Case)
     // -----------------------------------------------------------------------
@@ -254,7 +247,6 @@ int main()
     //   do-while → govdeyi ONCE calistirir, sonra kontrol eder
     //              (en az 1 iterasyon garantilidir)
     // -----------------------------------------------------------------------
-
 
     // -----------------------------------------------------------------------
     // NIHAI CIKTI (Final Output) :
