@@ -3,6 +3,38 @@
 // STANDART : C++17
 // =============================================================================
 
+
+// ##########################################################################
+//  1) SADE KOD (tamami, yorumsuz)
+// ##########################################################################
+
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    int sifre = 1850;
+
+    int input;
+
+    do
+    {
+        cout << "Sifreyi giriniz: ";
+
+        cin >> input;
+
+    } while (input != sifre);
+
+    cout << " welcome home sir " << endl;
+
+}
+
+
+// ##########################################################################
+//  2) ACIKLAMALI HALI (aciklama, anlattigi kodun ALTINDA)
+// ##########################################################################
+
 #include <iostream>
 // Konsol giriş/çıkış kütüphanesi. Olmadan cout ve cin çalışmaz.
 // C# karşılığı: "using UnityEngine;"
@@ -45,4 +77,5 @@ int main()
     // endl: yeni satır ekler + tamponu (buffer) temizler.
     // Performans gerektiren durumlarda endl yerine '\n' tercih edilir.
 
-} // main() bitti. "sifre" ve "input" stack'ten silinir.
+}
+// main() bitti. "sifre" ve "input" stack'ten silinir.
