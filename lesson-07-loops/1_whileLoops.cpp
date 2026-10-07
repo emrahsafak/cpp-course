@@ -1,78 +1,11 @@
-// ##########################################################################
-//  ORNEK A — TEMEL WHILE DONGUSU
-// ##########################################################################
-
-
-// ==========================================================================
-//  A-1) SADE KOD (tamami, yorumsuz)
-// ==========================================================================
-
-#include <iostream>
-using namespace std;
-
-int main()
-{
-	int index = 3;
-
-	while (index <= 10)
-	{
-		cout << " Index degeri :" << index << endl;
-		index++;
-	}
-	 
-	cout << endl << " dongu bitti ";
-	cout << " Index degeri :" << index << endl;
-    
-}
-
-
-// ==========================================================================
-//  A-2) ACIKLAMALI HALI (aciklama, anlattigi kodun ALTINDA)
-// ==========================================================================
-
-#include <iostream>
-using namespace std;
-
-int main()
-{
-	int index = 3;
-
-	while (index <= 10)
-	{
-		cout << " Index degeri :" << index << endl;
-		index++;
-	}
-	/* 
-	   while dongusu(Loop) :
-
-	   * Onceden belirlenmis kosullara kadar devam eder.
-	   * Kosulun her kontrolunden sonra dongu icerisindeki islemler bir kez yapilir/
-	   * Kosul bozulduktan sonra ilk kontrolde dongu terk edilir.
-	   
-	   while ( kosu ) 
-	   {
-	     // yapilacak islem 1
-	     // yapilacak islem 2
-	     // yapilacak islem 3
-	   }
-	*/ 
-	 
-	cout << endl << " dongu bitti ";
-	cout << " Index degeri :" << index << endl;
-    
-}
-
-
-// <=================================================================================================> 
-
 
 // ##########################################################################
-//  ORNEK B — WHILE DONGUSU: DERLEYICI VE CALISMA ZAMANI DAVRANISI
+//  — WHILE DONGUSU: DERLEYICI VE CALISMA ZAMANI DAVRANISI
 // ##########################################################################
 
 
 // ==========================================================================
-//  B-1) SADE KOD (tamami, yorumsuz)
+//  1) SADE KOD (tamami, yorumsuz)
 // ==========================================================================
 
 #include <iostream>
@@ -96,7 +29,7 @@ int main()
 
 
 // ==========================================================================
-//  B-2) ACIKLAMALI HALI (aciklama, anlattigi kodun ALTINDA)
+//  2) ACIKLAMALI HALI (aciklama, anlattigi kodun ALTINDA)
 // ==========================================================================
 
 #include <iostream>
