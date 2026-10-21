@@ -38,7 +38,11 @@ int main()
 
 // ============================================================
 //  DEBUGGER TUŞLARI
-//
+//  F10         →  Step Over: fonksiyon çağrısını tek adımda geç (içine girme)
+//  F11         →  Step Into: fonksiyonun içine gir
+//  Shift+F11   →  Step Out: içinde olduğun fonksiyondan çık
+//  F5 / Yeşil ok → Debugger'ı başlat / breakpoint'ten devam et
+// ============================================================
 //  F9          →  Breakpoint koy / kaldır
 //  F5          →  Programı başlat veya breakpoint'ten devam et
 //  F10         →  Bir sonraki satıra geç (Step Over)
