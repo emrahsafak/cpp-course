@@ -1,122 +1,87 @@
 // ============================================================
-//  KONU : İç İçe Döngüler (Nested Loops)
-//  GİRİŞ: sayi = 5
-//  ÇIKTI:
-//  1
-//  2 2
-//  3 3 3
-//  4 4 4 4
-//  5 5 5 5 5
+//  KONU : Visual Studio Debugger Mantigi
+//  KOD  : break ornegi -> cikti: 0  1  2
 // ============================================================
 
-
-// ── KODUN KENDİSİ ────────────────────────────────────────────
-
 #include <iostream>
-using namespace std;
+using namespace std;   // Ogrenme asamasinda sorun degil.
+                       // Buyuk projelerde std::cout yazilir.
 
 int main()
 {
-    int sayi;
-    cout << "Lutfen bir sayi giriniz: ";
-    cin >> sayi;
+    // -- BREAKPOINT NEDIR? -----------------------------------
+    //
+    //  Imlec satirdayken F9'a bas (ya da satirin soluna tikla)
+    //  -> kirmizi nokta cikar = Breakpoint.
+    //  Program o satira gelince, satir CALISMADAN HEMEN ONCE durur.
+    //
+    //  Neden lazim?
+    //  Program normalde milisaniyede biter, hicbir sey goremezsin.
+    //  Breakpoint ile istedigin satirda durdurup inceleyebilirsin.
 
-    for (int j = 1; j <= sayi; j++)
+    for (int i = 0; i <= 5; i++)   // <- buraya F9 bas, breakpoint koy
     {
-        for (int i = 1; i <= j; i++)
-        {
-            cout << j << " ";
-        }
-        cout << endl;
+        // -- SARI OK NEDIR? ----------------------------------
+        //
+        //  Debugger calisirken satirin solunda sari ok gorursun.
+        //  Ok = "CPU siradaki islemi bu satirda yapacak".
+        //  Yani o satir HENUZ calismadi. Sonraki F10'da calisir.
+
+        if (i == 3)
+            break;   // i=3 oldugunda dongu tamamen biter.
+                     // cout o tur calismaz -> 3 BASILMAZ.
+
+        cout << i << "    ";
     }
 
-    return 0;
+    // Cikti: 0    1    2
+    // break OLMASAYDI: 0    1    2    3    4    5
+
+    return 0;   // main'in dondurdugu 0 = isletim sistemine "basarili" der
 }
 
-
 // ============================================================
-//  AÇIKLAMA — ADIM ADIM
+//  DEBUGGER TUSLARI
 // ============================================================
 //
+//  | Tus         | Ne yapar                                        |
+//  |-------------|-------------------------------------------------|
+//  | F9          | Breakpoint koy / kaldir                         |
+//  | F5          | Debugger'i baslat / breakpoint'ten devam et     |
+//  | Ctrl+F5     | Debugger'siz calistir (konsol acik kalir)       |
+//  | F10         | Step Over: fonksiyon cagrisini tek adimda gec   |
+//  | F11         | Step Into: fonksiyonun icine gir                |
+//  | Shift+F11   | Step Out: icinde oldugun fonksiyondan cik       |
+//  | Shift+F5    | Debugger'i tamamen durdur                       |
 //
-//  ── DEĞİŞKENLER ─────────────────────────────────────────────
+// ── NASIL KULLANIRSIN? ───────────────────────────────────────
 //
-//  sayi  →  kullanıcıdan alınan sayı. Örnek: 5
-//  j     →  dış döngü değişkeni. Hangi SATIRDA olduğumuzu tutar.
-//  i     →  iç döngü değişkeni. O satırda kaç kere yazacağımızı SAYAR.
+//  1. for satirina F9 bas      -> breakpoint koy
+//  2. F5 bas                   -> program o satirda DURUR
+//  3. F10'a basmaya devam et   -> satir satir ilerle
+//  4. Alttaki Locals/Autos'a bak -> i degiskenini canli izle
 //
+//  Her F10'da 'i' canli degisir:
+//  i = 0 -> 1 -> 2 -> 3 (break! cout calismaz, dongu biter)
 //
-//  ── DIŞ DÖNGÜ ───────────────────────────────────────────────
+// ── LOCALS vs AUTOS ──────────────────────────────────────────
 //
-//  for (int j = 1; j <= sayi; j++)
+//  Locals : fonksiyondaki TUM yerel degiskenleri gosterir.
+//  Autos  : sadece su anki ve onceki satirda gecen isimleri gosterir.
 //
-//  j = 1 den başlar, sayi'ya (5) kadar gider.
-//  Her j değeri = bir satır demektir.
-//  j=1 → 1. satır
-//  j=2 → 2. satır
-//  j=3 → 3. satır
-//  j=4 → 4. satır
-//  j=5 → 5. satır
+// ── BASLATILMAMIS DEGISKEN UYARISI ───────────────────────────
 //
+//  Bir degiskenin satiri henuz calismadiysa, debugger'da
+//  gordugun deger BELIRSIZDIR (onceden bellekte kalan cop).
+//  0 gormen, degiskenin 0 oldugu anlamina gelmez.
+//  Cozum: degiskeni tanimladigin anda ilkle (int x = 0;).
 //
-//  ── İÇ DÖNGÜ ────────────────────────────────────────────────
+// ── KUCUK NOT ────────────────────────────────────────────────
 //
-//  for (int i = 1; i <= j; i++)
+//  for'un 3. kisminda i++ ile ++i ayni sonucu verir, cunku
+//  ifadenin degeri kullanilmiyor. Fark yalnizca sonucu bir
+//  yerde kullandiginda ortaya cikar (b = a++ ile b = ++a gibi).
 //
-//  i = 1 den başlar, j'ye kadar gider.
-//  Yani j kaç ise, iç döngü o kadar döner.
-//  j=1 → i: 1           → 1 kere döner
-//  j=2 → i: 1, 2        → 2 kere döner
-//  j=3 → i: 1, 2, 3     → 3 kere döner
-//
-//  ÖNEMLİ: cout << j yazar, i değil!
-//  i sadece SAYICI görevi görür, ekrana j yazılır.
-//
-//
-//  ── ADIM ADIM TAM İZLEME ────────────────────────────────────
-//
-//  j=1:
-//    i=1 → (1<=1) TRUE  → "1 " yazar
-//    i=2 → (2<=1) FALSE → iç döngü biter
-//    endl → alt satıra geç
-//    EKRAN: 1
-//
-//  j=2:
-//    i=1 → (1<=2) TRUE  → "2 " yazar
-//    i=2 → (2<=2) TRUE  → "2 " yazar
-//    i=3 → (3<=2) FALSE → iç döngü biter
-//    endl → alt satıra geç
-//    EKRAN: 2 2
-//
-//  j=3:
-//    i=1 → (1<=3) TRUE  → "3 " yazar
-//    i=2 → (2<=3) TRUE  → "3 " yazar
-//    i=3 → (3<=3) TRUE  → "3 " yazar
-//    i=4 → (4<=3) FALSE → iç döngü biter
-//    endl → alt satıra geç
-//    EKRAN: 3 3 3
-//
-//  j=4:
-//    4 kere "4 " yazar → endl
-//    EKRAN: 4 4 4 4
-//
-//  j=5:
-//    5 kere "5 " yazar → endl
-//    EKRAN: 5 5 5 5 5
-//
-//  j=6 → (6<=5) FALSE → dış döngü biter → program biter.
-//
-//
-//  ── ALTIN KURAL ─────────────────────────────────────────────
-//
-//  Dış döngü (j)  →  hangi SATIRDA olduğunu belirler
-//  İç döngü (i)   →  o satırda KAÇ KERE yazılacağını sayar
-//  cout << j      →  i değil j yazılır, i sadece sayıcıdır
-//
-//  j her ilerlediğinde i SIFIRLANIR ve tekrar 1'den başlar.
-//
-//  Bunu şöyle düşün:
-//  Dış döngü = dakika ibresi  (yavaş döner)
-//  İç döngü = saniye ibresi  (hızlı döner, her dakika sıfırlanır)
-//
+//  Debugger = Programin X-ray'i.
+//  Kod calisirken icine bakmani saglar.
 // ============================================================
