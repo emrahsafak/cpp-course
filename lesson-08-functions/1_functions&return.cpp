@@ -1,3 +1,103 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// [BÖLÜM 1] FONKSİYONLAR — GENEL KAVRAM VE KULLANIM REHBERİ
+// ─────────────────────────────────────────────────────────────────────────────
+
+
+// ── FONKSİYON NEDİR? ─────────────────────────────────────────────────────────
+//
+//  Fonksiyon → belirli bir görevi yerine getiren, isim verilmiş kod bloğudur.
+//  Bir kez yazılır, istenen her yerden istenen sayıda çağrılabilir.
+//
+// Matematik Analojisi:
+//    Tıpkı f(x) = 3x + 2 gibi → girdi ver, çıktı al.
+//    Fonksiyonun içinde ne olduğu çağıran yeri ilgilendirmez.
+//    Buna "soyutlama (abstraction)" denir.
+//
+//  C# / Unity Karşılaştırması:
+//    C#'ta "metod (method)" denen şeyin C++'taki adı fonksiyondur.
+//    C#'ta tüm metodlar bir sınıf içinde olmak zorundaydı.
+//    C++'ta fonksiyonlar sınıf olmadan global olarak var olabilir.
+
+
+// ── FONKSİYON YAPISI (SYNTAX) ────────────────────────────────────────────────
+//
+//  dönüş_tipi  fonksiyon_adı ( parametre_listesi )
+//  {
+//      // gövde
+//      return değer;    ←  void ise bu satır olmayabilir
+//  }
+
+
+// ── 3 TEMEL FONKSİYON TÜRÜ ───────────────────────────────────────────────────
+//
+//  [1] Değer Döndüren
+//      int hesapla(int x) { return 3 * x + 2; }
+//      → Sonucu değişkene ata:   int s = hesapla(5);
+//      → Ya da doğrudan kullan:  cout << hesapla(5);
+//
+//  [2] Çok Parametreli
+//      int alanHesapla(int x, int y) { return x * y; }
+//      → Her parametrenin tipi ayrı yazılır.
+//      → Çağırırken sıra önemlidir: alanHesapla(5, 10) ≠ alanHesapla(10, 5)
+//
+//  [3] void — Değer Döndürmeyen
+//      void yazdir(int n) { cout << n; }
+//      → Sonuç gerekmez, fonksiyon kendi içinde işini bitirir.
+//      → Hatalı kullanım: int x = yazdir(5);  ← DERLEME HATASI
+
+
+// ── TEMEL KAVRAMLAR SÖZLÜĞÜ ──────────────────────────────────────────────────
+//
+//  Tanımlama  (Definition)  : Fonksiyonun gövdesini yazmak.
+//  Çağırma    (Call/Invoke) : Fonksiyonu kullanmak.
+//  Parametre  (Parameter)   : Tanımdaki değişken adları.      → (int x, int y)
+//  Argüman    (Argument)    : Çağırırken verilen gerçek değer. → (5, 10)
+//  Dönüş Tipi              : int, double, bool, void, string ...
+//  Lokal Değişken          : Fonksiyon içinde yaşar, dışarıdan erişilemez.
+
+
+// ── NEDEN FONKSİYON KULLANIRIZ? ──────────────────────────────────────────────
+//
+//  [1] DRY — Don't Repeat Yourself
+//      Aynı kodu defalarca yazmak yerine bir kez tanımla, istediğin kadar çağır.
+//
+//  [2] Okunabilirlik
+//      kareAlanHesaplaGoster(5) → ne yaptığını okuyunca anlıyorsun.
+//      50 satır kodu main() içine gömmek yerine anlamlı fonksiyonlar kullan.
+//
+//  [3] Test Edilebilirlik
+//      Her fonksiyon ayrı ayrı test edilebilir.
+//      Hata varsa direkt o fonksiyona bakarsın, tüm kodu karıştırmazsın.
+//
+//  [4] Bakım Kolaylığı
+//      Formül değişecekse sadece fonksiyon gövdesini güncelle.
+//      Geri kalan her şey otomatik olarak doğrulanır.
+
+
+// ── PRO İPUCU — FONKSİYON PROTOTYPE ─────────────────────────────────────────
+//
+//  Bu derste fonksiyonları main()'den ÖNCE yazdık.
+//  Peki sonra yazmak istesek? Derleyici üstten aşağı okur —
+//  tanımlamadan önce kullanırsan "identifier not found" hatası alırsın!
+//
+//  Çözüm → Prototype (öne bildirim):
+//
+//    int topla(int a, int b);       ← sadece imzayı bildir, gövde yok
+//
+//    int main() {
+//        cout << topla(3, 5);       ← artık main() önce gelebilir
+//    }
+//
+//    int topla(int a, int b) {      ← asıl tanımlama burada
+//        return a + b;
+//    }
+//
+//  Bunu ilerleyen derslerde göreceksin — şimdilik bilmen yeterli.
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+
+
 #include <iostream>
 using namespace std;
 
@@ -152,100 +252,3 @@ int main()
 
 
 
-// ─────────────────────────────────────────────────────────────────────────────
-// [BÖLÜM 3] FONKSİYONLAR — GENEL KAVRAM VE KULLANIM REHBERİ
-// ─────────────────────────────────────────────────────────────────────────────
-
-
-// ── FONKSİYON NEDİR? ─────────────────────────────────────────────────────────
-//
-//  Fonksiyon → belirli bir görevi yerine getiren, isim verilmiş kod bloğudur.
-//  Bir kez yazılır, istenen her yerden istenen sayıda çağrılabilir.
-//
-// Matematik Analojisi:
-//    Tıpkı f(x) = 3x + 2 gibi → girdi ver, çıktı al.
-//    Fonksiyonun içinde ne olduğu çağıran yeri ilgilendirmez.
-//    Buna "soyutlama (abstraction)" denir.
-//
-//  C# / Unity Karşılaştırması:
-//    C#'ta "metod (method)" denen şeyin C++'taki adı fonksiyondur.
-//    C#'ta tüm metodlar bir sınıf içinde olmak zorundaydı.
-//    C++'ta fonksiyonlar sınıf olmadan global olarak var olabilir.
-
-
-// ── FONKSİYON YAPISI (SYNTAX) ────────────────────────────────────────────────
-//
-//  dönüş_tipi  fonksiyon_adı ( parametre_listesi )
-//  {
-//      // gövde
-//      return değer;    ←  void ise bu satır olmayabilir
-//  }
-
-
-// ── 3 TEMEL FONKSİYON TÜRÜ ───────────────────────────────────────────────────
-//
-//  [1] Değer Döndüren
-//      int hesapla(int x) { return 3 * x + 2; }
-//      → Sonucu değişkene ata:   int s = hesapla(5);
-//      → Ya da doğrudan kullan:  cout << hesapla(5);
-//
-//  [2] Çok Parametreli
-//      int alanHesapla(int x, int y) { return x * y; }
-//      → Her parametrenin tipi ayrı yazılır.
-//      → Çağırırken sıra önemlidir: alanHesapla(5, 10) ≠ alanHesapla(10, 5)
-//
-//  [3] void — Değer Döndürmeyen
-//      void yazdir(int n) { cout << n; }
-//      → Sonuç gerekmez, fonksiyon kendi içinde işini bitirir.
-//      → Hatalı kullanım: int x = yazdir(5);  ← DERLEME HATASI
-
-
-// ── TEMEL KAVRAMLAR SÖZLÜĞÜ ──────────────────────────────────────────────────
-//
-//  Tanımlama  (Definition)  : Fonksiyonun gövdesini yazmak.
-//  Çağırma    (Call/Invoke) : Fonksiyonu kullanmak.
-//  Parametre  (Parameter)   : Tanımdaki değişken adları.      → (int x, int y)
-//  Argüman    (Argument)    : Çağırırken verilen gerçek değer. → (5, 10)
-//  Dönüş Tipi              : int, double, bool, void, string ...
-//  Lokal Değişken          : Fonksiyon içinde yaşar, dışarıdan erişilemez.
-
-
-// ── NEDEN FONKSİYON KULLANIRIZ? ──────────────────────────────────────────────
-//
-//  [1] DRY — Don't Repeat Yourself
-//      Aynı kodu defalarca yazmak yerine bir kez tanımla, istediğin kadar çağır.
-//
-//  [2] Okunabilirlik
-//      kareAlanHesaplaGoster(5) → ne yaptığını okuyunca anlıyorsun.
-//      50 satır kodu main() içine gömmek yerine anlamlı fonksiyonlar kullan.
-//
-//  [3] Test Edilebilirlik
-//      Her fonksiyon ayrı ayrı test edilebilir.
-//      Hata varsa direkt o fonksiyona bakarsın, tüm kodu karıştırmazsın.
-//
-//  [4] Bakım Kolaylığı
-//      Formül değişecekse sadece fonksiyon gövdesini güncelle.
-//      Geri kalan her şey otomatik olarak doğrulanır.
-
-
-// ── PRO İPUCU — FONKSİYON PROTOTYPE ─────────────────────────────────────────
-//
-//  Bu derste fonksiyonları main()'den ÖNCE yazdık.
-//  Peki sonra yazmak istesek? Derleyici üstten aşağı okur —
-//  tanımlamadan önce kullanırsan "identifier not found" hatası alırsın!
-//
-//  Çözüm → Prototype (öne bildirim):
-//
-//    int topla(int a, int b);       ← sadece imzayı bildir, gövde yok
-//
-//    int main() {
-//        cout << topla(3, 5);       ← artık main() önce gelebilir
-//    }
-//
-//    int topla(int a, int b) {      ← asıl tanımlama burada
-//        return a + b;
-//    }
-//
-//  Bunu ilerleyen derslerde göreceksin — şimdilik bilmen yeterli.
-
-// ─────────────────────────────────────────────────────────────────────────────
