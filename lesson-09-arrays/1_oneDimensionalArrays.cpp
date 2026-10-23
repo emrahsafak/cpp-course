@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>    // string turu icin gerekli
 #include <cstddef>   // size_t icin gerekli
 #include <iterator>  // size() fonksiyonu icin gerekli (C++17)
 
@@ -6,6 +7,7 @@ using namespace std;
 
 int main()
 {
+    // ---------------- DERS 1 ----------------
     int dizi[5] = { 12, 20, 8, 45, 18 };
 
     for (size_t i = 0; i < size(dizi); ++i)
@@ -21,6 +23,34 @@ int main()
         cout << i + 1 << ". eleman : " << dizi[i] << '\n';
     }
 
+    // ---------------- DERS 2 ----------------
+    cout << "\n--- Ders 2: bos koseli parantez ve farkli turler ---\n";
+
+    double arr[] = { 21.2, 25.75, 27.01 };
+    string mevsimler[] = { "ilkbahar", "yaz", "sonbahar", "kis" };
+    int kismi[5] = { 1, 2 };
+
+    for (size_t i = 0; i < size(arr); ++i)
+    {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+
+    for (size_t i = 0; i < size(mevsimler); ++i)
+    {
+        cout << mevsimler[i] << " ";
+    }
+    cout << endl;
+
+    for (size_t i = 0; i < size(kismi); ++i)
+    {
+        cout << kismi[i] << " ";
+    }
+    cout << endl;
+
+    cout << "arr eleman sayisi : " << size(arr) << '\n';
+    cout << "arr toplam bayt   : " << sizeof(arr) << '\n';
+
     return 0;
 }
 
@@ -28,6 +58,8 @@ int main()
 // -------------------------------------------------------
 //  BOLUM 2 — KODUN SATIR SATIR ACIKLAMASI
 // -------------------------------------------------------
+//
+//  ---------- DERS 1 ----------
 //
 //  SATIR: int dizi[5] = { 12, 20, 8, 45, 18 };
 //  RAM'de yan yana 5 tane int kutusu acar ve degerleri ayni anda yazar.
@@ -55,6 +87,34 @@ int main()
 //  SATIR: ikinci for dongusu
 //  Ayni dongu tekrar calisir. Bu sefer dizinin guncel halini yazar.
 //
+//  ---------- DERS 2 ----------
+//
+//  SATIR: double arr[] = { 21.2, 25.75, 27.01 };
+//  Kose parantezin ICI BOS birakilmistir. Derleyici suslu parantezin
+//  icindeki deger sayisini sayar ve boyutu kendisi belirler: 3.
+//  Yani bu satir "double arr[3] = {...}" ile birebir aynidir.
+//  double 8 bayt oldugu icin toplam bellek: 3 x 8 = 24 bayt.
+//  Bos [] YALNIZCA ilk deger verilen tanimlamada kullanilabilir.
+//
+//  SATIR: string mevsimler[] = { "ilkbahar", "yaz", "sonbahar", "kis" };
+//  Dizi her turden olabilir; hepsi ayni turden olmak zorundadir.
+//  Burada 4 tane string kutusu var, boyut yine otomatik (4).
+//  string icin <string> kutuphanesi eklenmelidir.
+//
+//  SATIR: int kismi[5] = { 1, 2 };
+//  Boyut 5 ama sadece 2 deger verilmis. Verilmeyen kutular
+//  otomatik olarak 0 ile doldurulur: 1 2 0 0 0.
+//
+//  SATIR: cout << arr[i] << " ";
+//  Her elemandan sonra bosluk yazar, boylece hepsi ayni satirda kalir.
+//
+//  SATIR: cout << endl;
+//  Satir sonuna gecer ve tamponu bosaltir. Sonraki cikti yeni satirda baslar.
+//
+//  SATIR: cout << "arr toplam bayt   : " << sizeof(arr) << '\n';
+//  sizeof(arr) TUM dizinin bayt sayisini verir (24), eleman sayisini degil.
+//  Eleman sayisi = sizeof(arr) / sizeof(arr[0]) = 24 / 8 = 3.
+//
 //  GERCEK CALISMA CIKTISI (kullanici 98 girdi):
 //    1. eleman : 12
 //    2. eleman : 20
@@ -68,7 +128,14 @@ int main()
 //    4. eleman : 45
 //    5. eleman : 18
 //
-//  BELLEKTE NE DEGISTI?
+//    --- Ders 2: bos koseli parantez ve farkli turler ---
+//    21.2 25.75 27.01
+//    ilkbahar yaz sonbahar kis
+//    1 2 0 0 0
+//    arr eleman sayisi : 3
+//    arr toplam bayt   : 24
+//
+//  BELLEKTE NE DEGISTI? (Ders 1)
 //    index     ONCE     SONRA
 //    dizi[0]   12       12
 //    dizi[1]   20  -->  98
@@ -102,6 +169,45 @@ int main()
 //  Index "baslangictan kac kutu ileride" demektir.
 //  Ilk kutu baslangicta durdugu icin indexi 0'dir.
 //
+//  DIZI TANIMLAMANIN UC YOLU:
+//    1) Once tanimla, sonra tek tek doldur (kursun ilk gosterdigi yontem):
+//         int dizi[5];
+//         dizi[0] = 12;
+//         dizi[1] = 20;   ... seklinde devam eder.
+//       Uzun ve hataya acik. Doldurmadan okunan kutu cop deger tasir.
+//    2) Boyut ve degerleri birlikte ver:
+//         int dizi[5] = { 12, 20, 8, 45, 18 };
+//    3) Boyutu bos birak, derleyici saysin:
+//         double arr[] = { 21.2, 25.75, 27.01 };
+//       Eleman eklersen ya da cikarirsan boyutu elle guncellemene gerek kalmaz.
+//
+//  KISMI BASLATMA:
+//    int a[5] = { 1, 2 };   -> 1 2 0 0 0   (kalanlar 0 olur)
+//    int b[5] = {};         -> 0 0 0 0 0   (hepsi 0)
+//    int c[5];              -> cop deger   (ilk deger verilmemis)
+//  Dizi boyutundan FAZLA deger verilirse derleme hatasi olur:
+//    int d[2] = { 1, 2, 3 };   // HATA
+//
+//  FARKLI TURDE DIZILER:
+//    int       tam sayilar        (4 bayt)
+//    double    ondalikli sayilar  (8 bayt)
+//    string    metinler           (boyutu derleyiciye gore degisir)
+//  Bir dizinin TUM elemanlari AYNI turden olmak zorundadir.
+//  Ayni dizide hem int hem string tutulamaz.
+//
+//  DONGU SINIRI: SABIT SAYI YERINE size()
+//  Kurs ornegi:
+//    for (int i = 0; i < 5; i++)   // 5 elle yazilmis
+//  Sorun: diziye eleman ekler ve donguyu guncellemeyi unutursan
+//  ya son eleman yazilmaz ya da dizinin disina taşilir.
+//  Cozum: i < size(dizi). Dizi buyuse kucukse dongu kendini uyarlar.
+//  Eski yontem (C++17 oncesi): sizeof(dizi) / sizeof(dizi[0])
+//
+//  i++ ILE ++i:
+//  Kurs i++ kullaniyor, biz ++i kullandik. Tamsayilarda sonuc ayni.
+//  ++i ileride iterator ve sinif turlerinde gereksiz kopya yapmaz,
+//  bu yuzden profesyonel kodda tercih edilir.
+//
 //  cout << dizi NEDEN ADRES YAZAR?
 //  Ifadede "dizi" yazildiginda derleyici onu ilk elemanin adresini
 //  tutan bir isaretciye (int*) cevirir. Buna array decay denir.
@@ -111,6 +217,7 @@ int main()
 //  C# ILE FARK:
 //  C#'ta int[] heap'te duran, uzunlugunu bilen ve sinir kontrolu
 //  yapan bir nesnedir (IndexOutOfRangeException).
+//  C#'ta var arr = new double[] { 21.2, 25.75, 27.01 } benzer mantiktir.
 //  C++'ta ham dizi sadece ardisik byte'lardir: uzunluk saklanmaz,
 //  sinir kontrolu yoktur.
 //
@@ -118,8 +225,10 @@ int main()
 //    - dizi[5] gecersizdir (gecerli indexler 0-4). C++ hata vermez,
 //      davranis tanimsizdir (undefined behavior).
 //    - Ilk deger verilmemis dizi (int dizi[5];) cop deger tasir.
-//      int dizi[5] = {}; yazilirsa hepsi 0 olur.
-//    - Dongu sinirinda sabit sayi yerine size(dizi) kullan.
+//    - int x[]; seklinde boyutsuz VE degersiz tanimlama derleme hatasidir.
+//      Derleyici boyutu neye gore sayacagini bilemez.
+//    - size() C++17 ile geldi. Eski standartta "size was not declared"
+//      hatasi verir. Derleyici ayarindan -std=c++17 secilmelidir.
 //    - cin >> dizi[1] yanlis tur girilirse (ornek: harf) basarisiz olur
 //      ve sonraki okumalar da bozulur. Bu durum ileride ele alinacak.
 //
