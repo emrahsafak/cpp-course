@@ -71,7 +71,9 @@ int main()
 //  size(dizi) : dizinin eleman sayisini verir (5). Dizi buyurse
 //            kodu degistirmek gerekmez; elle yazilan "5" boyle degildir.
 //  size_t  : size()'in dondurdugu isaretsiz tur. Ayni turu kullanmak
-//            isaretli/isaretsiz karsilastirma uyarisini onler.
+//            isaretli/isaretsiz karsilastirma uyarisini onler.Sadece 0 ve pozitifler(0,7,100)
+//            Fizik baglantisi: uzunluk,kutle ya da eleman sayisi gibi buyuklukler negatif olamaz.
+//            size_t "bu sayi bir miktar, yon degil" demenin turudur.
 //  ++i     : i'yi 1 artirir. Her turdan sonra calisir.
 //  Tur sayisi: i = 0, 1, 2, 3, 4 (i = 5 oldugunda sart bozulur, dongu biter).
 //
