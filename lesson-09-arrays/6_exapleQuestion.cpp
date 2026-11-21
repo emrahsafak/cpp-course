@@ -79,23 +79,38 @@ int sum[3][2];
 //   tipin icinde yazilidir. arr2 ayni tiptedir.
 //
 // SATIR: for (auto& row : arr)
-//   Range-for: arr'nin 3 satirini sirayla gezer.
-//   row her turda gercek satirin kendisidir (tipi int(&)[2]).
-//   & kopya yapmaz; auto tipi derleyici bulur.
-//   & olmazsa row pointer'a donusur ve ic dongu derlenmez.
+//   Bu bir range-based for (range-for) dongusudur. 3 parcasi var:
+//   1) ":" isareti bu yapinin sabit parcasidir, "icindeki her biri
+//      icin" demektir. Solu: her turda elde edilen degisken.
+//      Sagi: gezilecek dizi. C#'taki karsiligi:
+//      foreach (var row in arr)
+//   2) auto: tipi derleyici bulur. arr'nin elemanlari int[2]
+//      oldugu icin row'un tipi int(&)[2] olur (2 elemanli satir).
+//   3) &: kopya alma, gercek satira bagla demektir. Yeni bir kutu
+//      acilmaz, mevcut satira ikinci bir isim verilir. row
+//      uzerindeki her islem arr'nin kendisini etkiler.
+//   Dongu arr'nin 3 satirini sirayla gezer.
+//   & olmazsa dizi kopyalanmaz, pointer'a donusur ve ic dongu
+//   boyutu bilemedigi icin derlenmez.
 //
 // SATIR: for (int& value : row)
-//   row bir int[2] oldugu icin sutun sayisi (2) tipten bilinir.
-//   value her turda satirdaki bir elemanin kendisidir.
+//   Ayni range-for yapisi: ":" "icindeki her biri icin" demektir.
+//   row bir int[2] oldugu icin ic dongu 2 eleman gezer; sutun
+//   sayisi tipten bilinir. Eleman tipi int oldugu icin auto
+//   yerine int yazildi.
+//   & burada da kopya degil, ikinci isim demektir: value, satirdaki
+//   elemanin kendisidir. int value yazilsaydi eleman kopyalanir,
+//   okunan sayi kopyaya yazilir ve dizi dolmazdi.
 //
 // SATIR: cin >> value;
-//   value referans oldugu icin okunan sayi dogrudan diziye yazilir.
+//   value, dizi elemaninin kendisi oldugu icin okunan sayi
+//   dogrudan diziye yazilir.
 //   Sira satir satirdir: arr[0][0], arr[0][1], arr[1][0] ...
 //   Ornek: 1 2 3 4 5 6 girilirse arr = {1,2}, {3,4}, {5,6}.
 //   Sayilari bosluk veya Enter ayirir.
 //
 // SATIR: for (auto& row : arr2)
-//   arr ile ayni mantik, sadece dizi farkli.
+//   arr ile ayni yapi (range-for, auto, &), sadece dizi farkli.
 //
 // SATIR: int sum[3][2];
 //   Toplamlari tutacak dizi. Cop dolu baslar; asagidaki dongu
@@ -103,9 +118,10 @@ int sum[3][2];
 //   tanimlanabilir.
 //
 // SATIR: for (int row = 0; row < 3; row++)
-//   Burada row bir index'tir (sayi); range-for'daki row ise bir
-//   satirin kendisiydi. Isim ayni, anlam farkli; isim sadece bir
-//   etikettir. Gecerli satir indexleri 0 ... 2 oldugu icin row < 3.
+//   Bu klasik for dongusudur (range-for degil): row bir index'tir
+//   (sayi). Range-for'daki row ise bir satirin kendisiydi. Isim
+//   ayni, anlam farkli; isim sadece bir etikettir.
+//   Gecerli satir indexleri 0 ... 2 oldugu icin row < 3.
 //
 // SATIR: for (int column = 0; column < 2; column++)
 //   Ic dongu sutunlari gezer: column 0 ve 1. Dis dongunun her
