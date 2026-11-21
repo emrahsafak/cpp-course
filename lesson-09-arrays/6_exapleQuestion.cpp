@@ -1,3 +1,19 @@
+// ============================================================
+// SORU
+// ============================================================
+//
+// 3 satir x 2 sutunluk iki int dizisi (arr ve arr2) klavyeden
+// okunur. Iki dizinin ayni konumdaki elemanlari toplanip ucuncu
+// bir diziye (sum) yazilir ve sonuc matris seklinde ekrana
+// yazdirilir.
+//
+// Ornek:
+//   girdi : 1 2 3 4 5 6   ve   10 20 30 40 50 60
+//   cikti : 11 22
+//           33 44
+//           55 66
+//
+
 #include <iostream>
 #include <string>    // string turu icin gerekli
 #include <cstddef>   // size_t icin gerekli
@@ -53,21 +69,7 @@ int sum[3][2];
 
 }
 
-// ============================================================
-// SORU
-// ============================================================
-//
-// 3 satir x 2 sutunluk iki int dizisi (arr ve arr2) klavyeden
-// okunur. Iki dizinin ayni konumdaki elemanlari toplanip ucuncu
-// bir diziye (sum) yazilir ve sonuc matris seklinde ekrana
-// yazdirilir.
-//
-// Ornek:
-//   girdi : 1 2 3 4 5 6   ve   10 20 30 40 50 60
-//   cikti : 11 22
-//           33 44
-//           55 66
-//
+
 // ============================================================
 // KODUN ACIKLAMASI
 // ============================================================
