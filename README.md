@@ -15,4 +15,4 @@ This repository contains my exercises and projects while learning C++.
 - [Lesson 08: Functions](lesson-08-functions/)
 - [Lesson 09: Arrays](lesson-09-arrays/)
 - [Lesson 10: C++ Strings](lesson-10-c++strings/)
--[Lesson 11: Algorithm](lesson-11-algorithm/)
+- [Lesson 11: Algorithm](lesson-11-algorithm/)
