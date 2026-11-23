@@ -14,3 +14,4 @@ This repository contains my exercises and projects while learning C++.
 - [Lesson 07: Loops](lesson-07-loops/)
 - [Lesson 08: Functions](lesson-08-functions/)
 - [Lesson 09: Arrays](lesson-09-arrays/)
+- [Lesson 10: C++ Strings] (lesson-10-c++strings/)
