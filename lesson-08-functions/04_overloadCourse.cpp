@@ -16,13 +16,14 @@
 //     - DÖNÜŞ TİPİ  (!!)  -> sadece dönüş tipi farklı olan iki fonksiyon tanımlanamaz.
 //     - parametre isimleri
 //
-//  NASIL ÇALIŞIR? -> Overload resolution BELİRLİ ZAMANDA (compile-time) yapılır.
+//  NASIL ÇALIŞIR? -> Overload resolution DERLEME ZAMANINDA (compile-time) yapılır.
 //  Runtime'da "hangisini çağırayım?" diye bir arama YOKTUR. Derleyici her fonksiyonu
 //  "name mangling" ile benzersiz bir sembole çevirir; örn. GCC'de:
 //        int add(int,int)       ->  _Z3addii
 //        double add(double,double) -> _Z3adddd
-//  Linker için bunlar tamamen farklı isimlerdir. (C'de overloading olmamasının sebebi
-//  budur: C sembolleri mangle etmez.)
+//  Linker için bunlar tamamen farklı isimlerdir. (C'de overloading YOKTUR; bu yüzden
+//  C sembolleri mangle etmeye ihtiyaç duymaz. Neden-sonuç bu yönde işler: mangling,
+//  overloading'in bir SONUCUDUR, sebebi değil.)
 //
 //  ANALOJİLER:
 //   * C#/Unity : Debug.Log(object) / Debug.Log(object, Object context) overload'ları.
@@ -65,7 +66,7 @@ double add(double a, double b) {
     return a + b;
 }
 
-// (3) Parametre SAYISI farklı -> imza farklı.
+// (3) Parametre SAYISI farklı -> imza farklı -> gecerli overload.
 int add(int a, int b, int c) {
     std::cout << "  add(int, int, int)      -> ";
     return a + b + c;
@@ -168,8 +169,9 @@ void run() {
 
     // Ders: "Aynı ismi farklı tiplerde aşırı yüklüyorsam, implicit dönüşümlerin
     // beklemediğim bir adayı kazandırıp kazandırmadığını" düşünmek zorundayım.
-    // (std::string_view parametresi de çözüm olabilir, ama bool yine de kazanır
-    //  çünkü string_view'e dönüşüm de user-defined'dır.)
+    // DİKKAT: std::string_view parametresi bu tuzağı ÇÖZMEZ. const char* -> string_view
+    // dönüşümü de user-defined'dır, dolayısıyla bool (standard conversion) yine kazanır.
+    // Tek gerçek çözüm, yukarıdaki gibi const char* overload'ı eklemektir (exact match).
 }
 
 } // namespace part3
@@ -233,8 +235,9 @@ private:
 };
 
 void readOnly(const Buffer& b) {        // const referans -> sadece const üyeler çağrılabilir
-    std::cout << "  deger: " << b.at(0) << '\n';
-}
+    const int& stored = b.at(0);        // -> const at() seçilir (çağrıyı ayrı satıra aldık:
+    std::cout << "  deger: " << stored << '\n';   // aksi halde at()'in çıktısı
+}                                                  // cout zincirinin ortasına düşer)
 
 void run() {
     std::cout << "\n=== BOLUM 5: const uye fonksiyon overload ===\n";
@@ -279,7 +282,8 @@ void show(int v) { std::cout << "  show(int)    [normal]   : " << v << '\n'; }
 void run() {
     std::cout << "\n=== BOLUM 7: Template ile overload ===\n";
     show(5);        // İkisi de exact match -> eşitlikte NON-TEMPLATE kazanır.
-    show(5.0);      // Normal show(int)'e dönüşüm gerekir (conversion); template exact -> TEMPLATE kazanır.
+    show(5.5);      // Normal show(int)'e dönüşüm gerekir (conversion); template exact -> TEMPLATE kazanır.
+                    // (5.0 yerine 5.5 yazıldı: 5.0 ekranda "5" basınca show(5) ile ayırt edilemiyordu.)
     show('a');      // Template T=char EXACT; normal show(int) için promotion gerekir.
                     // Exact > promotion -> TEMPLATE kazanır. (Sürpriz: 'a' yazdırır, 97 değil.)
     // Kural: önce dönüşüm seviyesi, eşitse non-template tercih edilir.
