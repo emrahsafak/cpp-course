@@ -12,8 +12,6 @@ int main()
 	// - Degisken isimlerinde Turkce karakterler kullanılmaz.
 	// - Degisken isimlerindearada bosluk olamaz.
 	// - Degiskenisimlerinde arada nokta vb. karakterler kullanilamaz.
-
-	// Degisken isimlerini camelCase standartlarina uygun yazmaniz tavsiye olunur.
     // Degisken isimlerini camelCase standardiyla yazmaniz tavsiye edilir.
 
 	int dogumYili = 1980;
