@@ -142,6 +142,9 @@ void demo()
 // Tek cumlede: overloading, "ayni ismi yazdigimda derleyici dogrusunu
 // secebiliyor mu?" sorusudur.
 
+// Function Overloading : Ayni scope icerisindeki ISMI ayni, PARAMETRE TURU, SAYISI veya SIRASI farkli
+// fonksiyonlar arasinda olur.
+
 
 // 4. SIGNATURE (IMZA) NEDIR
 // -----------------------------------------------------------------------
@@ -330,7 +333,7 @@ void demo()
 } // namespace same_signature
 
 
-// 7. TANIM ANINDAKI HATALAR
+// 7. TANIM ANINDAKI HATALAR (DECLARATION -- derleme zamani)
 // -----------------------------------------------------------------------
 // Overloading hatalari iki ayri zamanda ortaya cikar. Bu ayrimi gormek, hata
 // mesajlarini okumayi kolaylastirir. Once fonksiyonlari YAZARKEN cikanlar:
@@ -350,10 +353,20 @@ void demo()
 // imzalarin gecerli olup cagrinin cozulemedigi durumdur (bkz. bolum 9.1).
 
 
-// 8. CAGRI ANI: OVERLOAD RESOLUTION
+// 8. CAGRI ANI: OVERLOAD RESOLUTION (CALL SITE -- yine derleme zamani)
 // -----------------------------------------------------------------------
 // Tanimlar gecerliyse, sira cagrida hangisinin secilecegine gelir. Surec uc
 // adimlidir ve tamami DERLEME ZAMANINDA isler.
+//
+// DIKKAT -- SIK YAPILAN HATA: bolum 7 ile bolum 8 arasindaki fark
+// "derleme zamani / calisma zamani" farki DEGILDIR. IKISI DE DERLEME
+// ZAMANIDIR. Fark, hatanin hangi noktada ciktigidir:
+//     bolum 7 -> TANIM noktasi (fonksiyonlari yazarken)
+//     bolum 8 -> CAGRI noktasi (fonksiyonu kullanirken)
+// Overload resolution calisma zamaninda OLSAYDI, her cagrida bir arama
+// yapilmasi gerekirdi ve overloading'in maliyeti sifir olmazdi. Oysa
+// derleyici cagriyi dogrudan mangle edilmis sembole baglar (bkz. 6.2),
+// yani secim program calismaya baslamadan once bitmistir.
 //
 //   Adim 1 -- CANDIDATE FUNCTIONS (adaylar)
 //     Derleyici o isimle gorunur olan tum fonksiyonlari toplar. Bu arama
