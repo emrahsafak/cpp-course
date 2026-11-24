@@ -14,7 +14,10 @@
 // sirayla cagirir, boylece dosya hem okunacak bir not hem calisan bir
 // programdir.
 //
-//    1. On bilgi: karistirilmasi kolay uc kavram cifti
+//    1. On bilgi: karistirilmasi kolay dort kavram cifti
+//       1.1 parameter / argument    1.2 call / return
+//       1.3 return type / parameter listesi
+//       1.4 derleme zamani / calisma zamani
 //    2. Overloading nedir, neden vardir
 //    3. Tanim: birlikte aranan uc sart
 //    4. Signature (imza) nedir
@@ -24,16 +27,17 @@
 //    8. Cagri ani: overload resolution
 //    9. Cagri anindaki hatalar ve klasik tuzaklar
 //   10. Savunma araclari: nullptr ve = delete
-//   11. Ileri basliklar: const uye fonksiyon, template, name hiding
+//   11. Ileri basliklar: const uye fonksiyon, template, name hiding,
+//       overloading / overriding
 //   12. Pratik kurallar
 //
 // Kod ve kimlikler Ingilizce, aciklamalar Turkce, teknik terimler Ingilizce
 // birakilmistir (signature, exact match, promotion, conversion ...).
 
 
-// 1. ON BILGI: KARISTIRILMASI KOLAY UC KAVRAM CIFTI
+// 1. ON BILGI: KARISTIRILMASI KOLAY DORT KAVRAM CIFTI
 // -----------------------------------------------------------------------
-// Overloading, bu uc ciftin ayrimi oturmadan ogrenilemez. Konunun tamami
+// Overloading, bu dort ciftin ayrimi oturmadan ogrenilemez. Konunun tamami
 // bunlarin uzerine kurulur.
 //
 // 1.1. PARAMETER ve ARGUMENT
@@ -62,6 +66,70 @@
 //        return type       -> fonksiyondan NE CIKAR (cikis ucu)
 //      Overloading YALNIZCA giris ucuyla ilgilenir. Asagidaki her sey bu
 //      cumlenin sonucudur.
+//
+// 1.4. DERLEME ZAMANI (compile time) ve CALISMA ZAMANI (run time)
+//      Ortada tek bir sey yoktur; IKI AYRI PROGRAM ve IKI AYRI AN vardir:
+//
+//        main.cpp     --[ DERLEYICI calisir: g++ ]-->  program dosyasi
+//        program      --[ PROGRAM calisir: kodunuz ]-->  ekran, dosya, sonuc
+//
+//      DERLEME ANI : g++ calisir. Girdisi metin dosyanizdir, cikisi
+//                    calistirilabilir bir dosyadir. Bu anda sizin kodunuzdan
+//                    TEK BIR SATIR CALISMAZ -- kodunuz henuz bir program
+//                    degil, sadece metindir.
+//      CALISMA ANI : uretilen dosyayi baslatirsiniz. g++ ortada yoktur, isi
+//                    bitmistir. Artik calisan sey sizin kodunuzdur.
+//
+//      TEMEL CUMLE: derleyici kodu OKUR, ama CALISTIRMAZ. Butun ayrim
+//      bundan cikar:
+//        bilir   : turler, yapi, soz dizimi, hangi overload'in secilecegi
+//        bilemez : DEGERLER, akisin nereye gidecegi, bellekte ne oldugu,
+//                  kullanicinin ne girecegi, dosyada ne yazdigi
+//
+//      KURAL: derleme zamani = TUR ve YAPI hatalari.
+//             calisma zamani = DEGER ve DURUM hatalari.
+//
+//      ASLINDA UC AN VARDIR (Visual Studio icin onemli):
+//        yazma ani   -> hicbir sey calismiyor. Yazarken gordugunuz kirmizi
+//                       dalgali cizgiler derleyici degil, IntelliSense'in
+//                       arka planda yaptigi on izlemedir.
+//        derleme ani -> Ctrl+Shift+B (Build)
+//        calisma ani -> programin basladigi an
+//      F5 TEK BIR AN DEGILDIR: once derler, sonra calistirir. Derleme
+//      basarisizsa F5 calisma anina hic gecmez.
+//
+//      PRATIK TEST: "bu hatayi bulmak icin programi calistirmam gerekir mi?"
+//        Hayir, kod yeterli      -> DERLEME zamani
+//          (tur uyusmazligi, ambiguous overload, redefinition, eksik ';')
+//        Evet, veri akmasi lazim -> CALISMA zamani
+//          (dizi tasmasi, sifira bolme, bos vektor, dangling reference)
+//      Daha hizli test: hata mesaji g++'tan mi geliyor, yoksa program
+//      calisirken mi ortaya cikiyor?
+//
+//      CALISMA ZAMANI HATALARI YALNIZCA KULLANICIDAN GELMEZ:
+//        1) kullanici girdisi -- cin'e harf veya sifir girilmesi
+//        2) hesaplanan degerler -- donguden tasan indeks, bolen olarak sifir
+//        3) dis dunya -- olmayan dosya, kopan baglanti, rand(), saat
+//        4) bellek ve yasam suresi -- yok olmus yerel degiskene donen referans
+//        5) kodun kendi mantigi -- average(7, 2) == 3 cunku int bolmesinde
+//           kesir atilir. Girdi yoktur, veri sabittir, sonuc yine yanlistir.
+//
+//      HATA, COKME DEMEK DEGILDIR:
+//        bos vektorde at(0) -> COKER.  Iyi haber: hatayi gordunuz.
+//        average(7, 2) == 3 -> COKMEZ. Program devam eder, yanlis sayiyi
+//                              rapora yazar; aylar sonra fark edilir.
+//      Sessiz yanlis sonuc, coken hatadan daha tehlikelidir. Modern C++
+//      pratiginin buyuk kismi hatayi derleme anina cekme ugrasidir; const,
+//      = delete ve guclu tipler bu amaca hizmet eder.
+//
+//      OVERLOADING BU AYRIMDA NEREDE? DERLEME ANINDA. rank('A') cagrisinin
+//      urettigi makine kodu sudur:
+//          mov  $0x41,%edi      ; 0x41 = 65 = 'A' -> donusum zaten yapilmis
+//          call <rank(int)>     ; cagrilacak adres SABIT olarak gomulu
+//      Ikili dosyada her iki overload da durur, ama cagri dogrudan
+//      rank(int)'in adresine baglanmistir. Program calisirken hicbir karar
+//      verilmez, hicbir arama yapilmaz -> runtime maliyeti SIFIRDIR.
+//      Karsit ornek icin bkz. bolum 11.5 (overriding calisma zamanidir).
 
 namespace prelude {
 
@@ -601,6 +669,27 @@ void demo()
 // 11.4. main OVERLOAD EDILEMEZ
 //       Standart bunu acikca yasaklar. main, isletim sistemiyle sozlesmesi
 //       olan ozel bir fonksiyondur.
+//
+// 11.5. OVERLOADING vs OVERRIDING -- derleme zamani / calisma zamani
+//       Bolum 1.4'teki ayrimin en net gorundugu yer burasidir.
+//           void shoot(Weapon& weapon) { weapon.fire(); }   // TEK satir
+//           shoot(base);    // -> Weapon::fire()
+//           shoot(rifle);   // -> Rifle::fire()
+//       Ayni satir, ayni cagri, iki farkli sonuc. Derleyici shoot'u derlerken
+//       Weapon& referansinin arkasinda bir Weapon mi Rifle mi oldugunu
+//       BILEMEZ; bu ancak program calisirken belli olur. Bu yuzden karar
+//       calisma zamanina, vtable'a (sanal fonksiyon tablosu) birakilir.
+//
+//         overloading : argument'larin STATIK turune gore secer
+//                       -> DERLEME zamani, static dispatch / early binding
+//                       -> maliyet sifir
+//         overriding  : nesnenin GERCEK turune gore secer
+//                       -> CALISMA zamani, dynamic dispatch / late binding
+//                       -> kucuk bir dolayli cagri maliyeti
+//
+//       C# ve Unity'de mekanizma birebir aynidir: metot asiri yuklemesi
+//       derleyici tarafindan, virtual / override dagitimi CLR tarafindan
+//       calisma aninda cozulur.
 
 namespace advanced {
 
@@ -637,6 +726,21 @@ struct Base
     void speak(int value) { std::cout << "  Base::speak(int): " << value << '\n'; }
 };
 
+// 11.5 icin: virtual fonksiyon -> secim calisma zamaninda yapilir
+struct Weapon
+{
+    virtual void fire() { std::cout << "  Weapon::fire()\n"; }
+    virtual ~Weapon() = default;
+};
+
+struct Rifle : Weapon
+{
+    void fire() override { std::cout << "  Rifle::fire()\n"; }
+};
+
+// Bu fonksiyon tek satirdir, ama iki farkli sonuc uretir
+void shoot(Weapon& weapon) { weapon.fire(); }
+
 struct Derived : Base
 {
     void speak(double value) { std::cout << "  Derived::speak(double): " << value << '\n'; }
@@ -659,6 +763,12 @@ void demo()
 
     Derived derived;
     derived.speak(5);   // Derived::speak(double) -- Base::speak(int) gizlendi
+
+    // 11.5: ayni satir (weapon.fire()), iki farkli sonuc -> calisma zamani
+    Weapon plainWeapon;
+    Rifle  rifle;
+    shoot(plainWeapon);   // -> Weapon::fire()
+    shoot(rifle);         // -> Rifle::fire()
 }
 
 } // namespace advanced
