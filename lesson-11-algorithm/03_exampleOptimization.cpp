@@ -1,59 +1,12 @@
 // SORU:
 // Kullanicidan bir aralik degeri (n) alin ve 2'den n'e kadar olan asal
-// sayilari iki yonde (kucukten buyuge ve buyukten kucuge) ekrana yazdirin.
-// Asal testini tek bir fonksiyonda toplayin ve hizli calissin: n = 100000
-// ve ustunde bile bekletmesin. Her yonde bulunan asal sayi adedini de
-// geri dondurun ve main icinde yazdirin.
-// Kontrol: n = 100 -> 25 asal, n = 1000 -> 168, n = 100000 -> 9592.
-
-// =====================================================================
-// ONCEKI KOD (eski surum, karsilastirma icin; adlarina Eski eklendi,
-// main'den cagrilmaz. Eski main sadece asalDuzEski(); asalTerstenEski();
-// cagiriyordu.)
-// =====================================================================
-#include <iostream>
-using namespace std;
-
-void asalDuzEski()
-{
-	int aralikSayi = 0;
-	cout << " Lutfnen asal sayilarin araligi icin bir deger giriniz :" << endl;
-	cin >> aralikSayi;
-	for (size_t i = 2; i <= aralikSayi; ++i)
-	{
-		size_t sayac = 0;
-		for (size_t j = 1; j <= i; ++j)
-		{
-			if (i % j == 0) { ++sayac; }
-		}
-		if (sayac == 2)
-			cout << i << " ,";
-	}
-	cout << endl;
-}
-
-void asalTerstenEski()
-{
-	int aralikSayi = 0;
-	cout << " Please enter your number for the range of the prime number : ";
-	cin >> aralikSayi;
-	for (int i = aralikSayi; i >= 2; --i)
-	{
-		int bolnSayi = 0;
-		for (int j = i; j >= 1; --j)
-		{
-			if (i % j == 0)
-				++bolnSayi;
-		}
-		if (bolnSayi == 2)
-			cout << i << " ,";
-	}
-	cout << endl;
-}
-
-// =====================================================================
-// YENI KOD (asagida, senin yazdigin ve calisan hali)
-// =====================================================================
+// sayilari ekrana yazdirin. Asal testini tek bir fonksiyonda (isPrime)
+// toplayin ve hizli calissin: n = 100000 ve ustunde bile bekletmesin.
+// Bulunan asal sayi adedini de geri dondurun ve main icinde yazdirin.
+//
+// Ornek: n = 20 -> 2, 3, 5, 7, 11, 13, 17, 19,   Toplam: 8
+// Kontrol: n = 100 -> 25 asal, n = 1000 -> 168, n = 10000 -> 1229,
+//          n = 100000 -> 9592.
 
 #include <iostream>
 using namespace std;
@@ -61,159 +14,75 @@ using namespace std;
 // asal sayilar yalnizca 1 e ve kendine tam bolunur.
 
 
-bool asalMi(int sayi)
+bool isPrime(int num)
 {
-	if (sayi < 2)
+	if (num < 2)
+		return false;
+	if (num == 2)
+		return true;
+
+	if (num % 2 == 0)
 	{
 		return false;
 	}
 
-	if (sayi == 2)
-		return true;
-
-	if (sayi % 2 == 0)
-		return false;
-
-	for (int j = 3; (long long) j * j <= sayi; j +=2 )
+	for (int i = 3; (long long)i * i <= num; i += 2)
 	{
-		if (sayi % j == 0)
+		if (num % i == 0)
 		{
 			return false;
 		}
+		
 	}
-
+	
 	return true;
+
 }
 
 
-
-int asalDuz()
+int primeNum()
 {
-	int aralikSayi = 0;
-	int asalAdeti = 0;
+	int num = 0;
+	int counterPrime = 0;
 
-	cout << " Lutfnen asal sayilarin araligi icin bir deger giriniz :" << endl;
-	cin >> aralikSayi;
+	cout << " Please enter the number for scope of the prime number :" << endl;
+	cin >> num; 
 
-	for (int i = 2; i <= aralikSayi; ++i)
+	for (int i = 2; i <= num; ++i)
 	{
-		if (asalMi(i))
+		if (isPrime(i))
 		{
-			cout << i << " ,";
-			++asalAdeti;
+			cout << i << ", ";
+			++counterPrime;
 		}
 
 	}
+
 	cout << endl;
-	return asalAdeti;
+	return counterPrime;
+	
 }
 
 
-
-int asalTersten()
-{
-	int aralikSayi = 0;
-	int asalAdeti = 0;
-	cout << " Please enter your number for the range of the prime number : ";
-	cin >> aralikSayi;
-
-	for (int i = aralikSayi; i >= 2; --i)
-	{
-		if (asalMi(i))
-		{
-			cout << i << " ,";
-			++asalAdeti;
-		}
-
-
-	}
-	cout << endl;
-	return asalAdeti;
-}
 
 
 
 int main()
 {
-	int asal = asalDuz();
-	cout << " Toplam asal sayi adedi :" << asal << endl;
+	int prime = primeNum();
 
+	cout << " Total prime number :" << prime << endl;
 
-
-	int asal2 = asalTersten();
-	cout << " Toplam asal sayi adedi :" << asal2 << endl;
 }
 
 // KODUN ACIKLAMASI
+// Bu not iki bolumden olusur:
+//   BOLUM 1: Kodun TUM satirlari ustten alta, sirayla.
+//   BOLUM 2: isPrime icindeki for dongusunun mantigi: neden karekok
+//            siniri, neden <=, neden 3'ten baslayip ikiser artiyor.
 //
 // =====================================================================
-// BOLUM 1: ONCEKI HAL (kisaca)
-// =====================================================================
-// Onceki kod dosyanin en ustunde, asalDuzEski ve asalTerstenEski adlariyla
-// duruyor (satir satir aciklamasi onceki asal sayilari notunda). Asal testi
-// asalDuz ve asalTersten icinde ayri ayri, ic ice bir dongu olarak
-// yazilmisti: her aday icin bir sayac, 1'den i'ye kadar bir ic dongu ve
-// dongu bittikten sonra "sayac == 2 mi?" karari.
-//
-// Mantik: i'nin 1'den i'ye kadar TUM bolenlerini say. Bolen sayisi tam 2
-// ise (1 ve kendisi) asaldir. Dogru calisir ama her aday sayi icin i kadar
-// tur doner ve ayni kod iki fonksiyonda kopya olarak durur.
-//
-// =====================================================================
-// BOLUM 2: NELER GELISTI (yeni kod onceki koda gore)
-// =====================================================================
-// 1) Test tek fonksiyona tasindi: asalMi(int sayi).
-//    ONCE: ayni ic dongu iki fonksiyonda kopyaydi.
-//    SIMDI: asal testi tek yerde, iki fonksiyon da asalMi(i) cagirir.
-//    Testi bir kez yazarsin, bir kez duzeltirsin.
-//
-// 2) Sayma yerine evet/hayir sorusu.
-//    ONCE: tum bolenler sayilir, sonunda "sayac == 2 mi?" diye bakilir.
-//    SIMDI: 1 ve kendisi disinda tek bir bolen bulunca hemen return false.
-//    Gerisini saymaya gerek yok. Ornek: 1000 sayisinda 2 bolundugu icin
-//    ilk kontrolde hemen false doner.
-//
-// 3) 1 ve sayinin kendisi denenmez.
-//    ONCE: j 1'den i'ye kadar gidiyordu (2 bolen hep garanti).
-//    SIMDI: bu ikisi her sayiyi boler, bilgi vermez, o yuzden hic
-//    denenmez. Kalan bolen aranir, hic bulunmazsa sayi asaldir.
-//
-// 4) Karekok siniri: j * j <= sayi.
-//    Bolenler cift cift gelir. 36 icin: 2x18, 3x12, 4x9, 6x6. Her cifte
-//    kucuk olan hep 6'ya (karekoke) kadar. Karekoktan sonrasina bakmak
-//    ayni ciftleri tersten tekrar bulmaktir. <= sart: 9 = 3x3 gibi tam
-//    karelerde j * j sayiya esit olur, < yazilsaydi 9 asal sanilirdi.
-//
-// 5) Cift sayilar atlanir.
-//    2 disindaki cift sayilar asal degildir. Cift sayi hemen elenir, tek
-//    sayida da bolen cift olamaz: j 3'ten baslar ve j += 2 ile ilerler
-//    (3, 5, 7, 9, ...). Islem yaklasik yariya iner.
-//
-// 6) int tasmasina karsi (long long).
-//    int en fazla 2147483647 tutar. j * j, j = 46341 oldugunda bu siniri
-//    asar ve sonuc anlamsiz olur. (long long) j * j ile carpma buyuk
-//    kutuda yapilir. Boylece asalMi(2147483647) de dogru cevap verir.
-//
-// 7) Tip duzeni.
-//    ONCE: asalDuz'da size_t i ile int aralikSayi karsilastiriliyordu,
-//    derleyici isaretli/isaretsiz karsilastirma uyarisi veriyordu.
-//    SIMDI: her yerde int, uyari yok.
-//
-// 8) Sonuc dogrulanabilir: fonksiyonlar asal adedini return eder.
-//    Bilinen degerlerle karsilastirilir: n = 100 -> 25, 1000 -> 168,
-//    10000 -> 1229, 100000 -> 9592. Iki yon da ayni n icin ayni adedi
-//    vermelidir.
-//
-// HIZ FARKI (ic dongunun kac kez calistigi, hesaplanmis deger):
-//   n = 1000    : onceki ~500 bin tur, yeni ~2 bin tur
-//   n = 100000  : onceki ~5 milyar tur, yeni ~1,3 milyon tur
-//   (yaklasik 3700 kat daha az is)
-// Karmasiklik: onceki yaklasik n * n / 2 adim (O(n^2)). Yeni kod her asal
-// sayida en fazla sqrt(sayi) / 2 tur doner; adim sayisi yaklasik
-// n * sqrt(n) mertebesinde ve pratikte bundan da az.
-//
-// =====================================================================
-// BOLUM 3: SATIR SATIR ACIKLAMA
+// BOLUM 1: SATIR SATIR ACIKLAMA
 // =====================================================================
 //
 // ---------- Baslangic ----------
@@ -224,110 +93,170 @@ int main()
 // SATIR: // asal sayilar yalnizca 1 e ve kendine tam bolunur.
 //   Yorum satiri, derleyici okumaz. Asal sayinin tanimini hatirlatir.
 //
-// ---------- asalMi: tek bir sayinin asal olup olmadigini soyler ----------
-// SATIR: bool asalMi(int sayi)
+// ---------- isPrime: bir sayinin asal olup olmadigini soyler ----------
+// SATIR: bool isPrime(int num)
 //   bool: sadece true (evet) ya da false (hayir) tutar. Bu fonksiyon bir
-//   evet/hayir sorusunun cevabini geri verir. sayi: sorulan sayi.
-// SATIR: if (sayi < 2)
+//   evet/hayir sorusunun cevabini geri verir: "num asal mi?". num: sorulan
+//   sayi. Cagiran taraf isPrime(7) derse num 7 olur.
+// SATIR: if (num < 2)
 //   0, 1 ve negatif sayilar asal degildir, en basta elenir.
 // SATIR: return false;
-//   (sayi < 2 icin) Cevabi "hayir" olarak verir ve fonksiyondan HEMEN
-//   cikar. Asagidaki satirlar bu sayi icin hic calismaz.
-// SATIR: if (sayi == 2)
-//   2 tek cift asal sayidir, asagidaki cift sayi kontrolunden once ozel
-//   olarak ele alinir. Sirasi onemli: bu satir altta olsaydi 2, bir
-//   sonraki kontrolde elenirdi.
+//   (num < 2 icin) Cevap "hayir". return cevabi verir ve fonksiyondan
+//   HEMEN cikar, asagidaki satirlar bu sayi icin hic calismaz.
+// SATIR: if (num == 2)
+//   2 tek cift asal sayidir. Asagidaki cift sayi kontrolunden ONCE ozel
+//   olarak ele alinir; siralari ters olsaydi 2 de cift diye elenirdi.
 // SATIR: return true;
-//   (sayi == 2 icin) Cevap "evet", fonksiyon biter. Suslu parantez yok,
+//   (num == 2 icin) Cevap "evet", fonksiyon biter. Suslu parantez yok,
 //   if sadece bu tek satiri kontrol eder.
-// SATIR: if (sayi % 2 == 0)
-//   % kalani verir. Kalan 0 ise sayi 2'ye tam bolunur, yani cifttir.
+// SATIR: if (num % 2 == 0)
+//   % kalani verir. Kalan 0 ise num, 2'ye tam bolunur, yani cifttir.
 // SATIR: return false;
-//   (cift sayilar icin) 2 disindaki cift sayilar asal degildir. Cevap
-//   "hayir", fonksiyon biter. Buraya gelen her sayi artik tektir.
-// SATIR: for (int j = 3; (long long) j * j <= sayi; j +=2 )
-//   j: aday bolen. 3'ten baslar, cunku sayi tek oldugu icin bolen cift
-//   olamaz. Sart: j'nin karesi sayiyi gecene kadar dene (karekok siniri).
-//   (long long) j: j'yi once buyuk kutuya cevirir, carpma tasmasin diye.
-//   j +=2: her turda j'ye 2 ekler, yani 3, 5, 7, 9, ... diye ilerler.
-// SATIR: if (sayi % j == 0)
-//   Kalan 0 ise j, sayiyi tam boler. 1 ve kendisi disinda bir bolen
+//   (cift sayilar icin) 2 disindaki cift sayilar asal degildir. Bu satirdan
+//   sonrasina gelen her sayi artik TEKTIR.
+// SATIR: for (int i = 3; (long long)i * i <= num; i += 2)
+//   i: aday bolen. 3'ten baslar (sayi tek, bolen cift olamaz). Sart: i'nin
+//   karesi num'u gecene kadar dene (karekok siniri). (long long)i: carpma
+//   tasmasin diye i'yi once buyuk kutuya cevirir. i += 2: her turda i'ye
+//   2 ekler, yani 3, 5, 7, 9, ... Bu satirin mantigi BOLUM 2'de.
+// SATIR: if (num % i == 0)
+//   Kalan 0 ise i, num'u tam boler: 1 ve kendisi disinda bir bolen
 //   bulundu demektir.
 // SATIR: return false;
 //   (bolen bulundugunda) Cevap "hayir", fonksiyon ve dongu hemen biter.
-//   Eski koddaki sayac ve break islerini tek satirda yapar.
+//   Geri kalan adaylari denemeye gerek yok.
 // SATIR: return true;
 //   Bu satira ancak dongu sonuna kadar doner ve hic return false
 //   calismazsa gelinir: hicbir aday bolmedi, sayi asaldir. Dongunun
 //   DISINDA durmasi onemli: icinde olsaydi ilk bolmeyen adayda "asal"
-//   derdi (9 icin j = 2 bolmez, yanlis cevap verirdi).
+//   derdi (9 icin i = 2 bolmez, yanlis cevap verirdi).
 //
-// ---------- asalDuz: kucukten buyuge ----------
-// SATIR: int asalDuz()
-//   Artik int: ekrana yazmanin yani sira bulunan asal adedini geri verir.
-// SATIR: int aralikSayi = 0;
+// ---------- primeNum: aralikta asallari yazar ve sayar ----------
+// SATIR: int primeNum()
+//   int: ekrana yazmanin yani sira bulunan asal adedini geri verir.
+// SATIR: int num = 0;
 //   Kullanicinin girecegi ust sinir (n) icin kutu. 0 ile baslatilir.
-// SATIR: int asalAdeti = 0;
+//   Bu num, isPrime icindeki num'dan BAGIMSIZ ayri bir kutudur (farkli
+//   scope).
+// SATIR: int counterPrime = 0;
 //   Bulunan asallari sayan kutu. Henuz hic asal bulunmadigi icin 0.
-// SATIR: cout << " Lutfnen asal sayilarin araligi icin bir deger giriniz :" << endl;
+// SATIR: cout << " Please enter the number for scope of the prime number :" << endl;
 //   Kullaniciya mesaj yazar. endl satir sonu koyar.
-// SATIR: cin >> aralikSayi;
-//   Klavyeden bir tam sayi okuyup aralikSayi'ya yazar. Kullanici Enter'a
-//   basana kadar program bekler.
-// SATIR: for (int i = 2; i <= aralikSayi; ++i)
-//   Aday sayilari 2'den n'e kadar gezer. int, aralikSayi ile ayni tip
-//   oldugu icin isaretli/isaretsiz uyarisi yoktur.
-// SATIR: if (asalMi(i))
-//   asalMi'ya "i asal mi?" diye sorar. Cagri, geri verdigi true ya da
-//   false ile yer degistirir, if ona bakar. Eski ic dongunun yerini aldi.
-// SATIR: cout << i << " ,";
-//   Asal sayiyi yazar, ardindan ayirici " ," basar.
-// SATIR: ++asalAdeti;
-//   Asal bulundu, sayac bir artar. Bu ve ustteki satir if'in suslu
-//   parantezi icinde, ikisi de sadece asal sayida calisir.
+// SATIR: cin >> num;
+//   Klavyeden bir tam sayi okuyup num'a yazar. Kullanici Enter'a basana
+//   kadar program bekler.
+// SATIR: for (int i = 2; i <= num; ++i)
+//   Dis dongu ADAY SAYILARI gezer: 2, 3, ... num (num dahil, <=). Burada
+//   i aday sayidir; isPrime icindeki i ise aday BOLENdir, ayri kutulardir.
+// SATIR: if (isPrime(i))
+//   isPrime'a "i asal mi?" diye sorar. Cagri, geri verdigi true ya da
+//   false ile yer degistirir, if ona bakar. Her aday icin bir kez sorulur.
+// SATIR: cout << i << ", ";
+//   Asal sayiyi yazar, ardindan ayirici ", " basar. Bu satir ve alttaki
+//   if'in suslu parantezi icinde, ikisi de sadece asal sayida calisir.
+// SATIR: ++counterPrime;
+//   Asal bulundu, sayac bir artar.
 // SATIR: cout << endl;
 //   Dongu bittikten sonra bir kez calisir, alt satira gecer.
-// SATIR: return asalAdeti;
-//   Bulunan asal adedini fonksiyonu cagirana geri verir. asalAdeti
+// SATIR: return counterPrime;
+//   Bulunan asal adedini fonksiyonu cagirana geri verir. counterPrime
 //   fonksiyonun yerel kutusudur, dis dunya ancak return ile ulasir.
-//
-// ---------- asalTersten: buyukten kucuge ----------
-// SATIR: int asalTersten()
-//   Ayni islem, sayilar buyukten kucuge gezilir. Bu da adedi geri verir.
-// SATIR: int aralikSayi = 0;
-//   Bu fonksiyonun kendi yerel kutusu, asalDuz'dakinden bagimsizdir.
-// SATIR: int asalAdeti = 0;
-//   Bu fonksiyonun kendi sayaci, yine 0 ile baslar.
-// SATIR: cout << " Please enter your number for the range of the prime number : ";
-//   Mesaj yazar. endl yok, imlec ayni satirda kalir, cevap yanina yazilir.
-// SATIR: cin >> aralikSayi;
-//   Klavyeden n degerini okur.
-// SATIR: for (int i = aralikSayi; i >= 2; --i)
-//   Geriye sayma: baslangic n, sart i >= 2, adim --i. Ilk tur n, son tur 2.
-// SATIR: if (asalMi(i))
-//   Ayni asal testi, ayni fonksiyondan. Test kodu kopyalanmadi.
-// SATIR: cout << i << " ,";
-//   Asal sayiyi yazar.
-// SATIR: ++asalAdeti;
-//   Sayaci bir artirir. Suslu parantez sayesinde sadece asal sayida calisir.
-// SATIR: cout << endl;
-//   Dongu bitince alt satira gecer.
-// SATIR: return asalAdeti;
-//   Adedi main'e geri verir.
+//   Ekrana yazilan liste (2, 3, 5, 7) ile return edilen adet (4) ayri
+//   seylerdir: cout insana gosterir, return koda verir.
 //
 // ---------- main ----------
 // SATIR: int main()
 //   Programin giris noktasi. Calisma buradan baslar.
-// SATIR: int asal = asalDuz();
-//   asalDuz calisir (n sorar, asallari yazar) ve geri verdigi adet asal
-//   kutusuna konur. Cagri, return degeriyle yer degistirir.
-// SATIR: cout << " Toplam asal sayi adedi :" << asal << endl;
-//   Geri gelen adedi yazdirir. Bilinen degerle (ornegin 100 icin 25)
-//   karsilastirarak dogrulama yapilir.
-// SATIR: int asal2 = asalTersten();
-//   Ikinci fonksiyon calisir ve adedi asal2 kutusuna konur. Ayri bir kutu,
-//   cunku asal zaten dolu. Ikisine ayni n girilirse asal == asal2 olmali.
-// SATIR: cout << " Toplam asal sayi adedi :" << asal2 << endl;
-//   Ikinci adedi yazdirir.
+// SATIR: int prime = primeNum();
+//   primeNum calisir (n sorar, asallari yazar) ve geri verdigi adet prime
+//   kutusuna konur. Cagri, return degeriyle yer degistirir: n = 10 icin
+//   satir int prime = 4; gibi okunur.
+// SATIR: cout << " Total prime number :" << prime << endl;
+//   Geri gelen adedi yazdirir. Bilinen degerle (100 icin 25) karsilastirip
+//   programin dogrulugunu kontrol edebilirsin. main'de return yazilmazsa
+//   derleyici otomatik return 0 ekler.
+//
+// =====================================================================
+// BOLUM 2: FOR DONGUSUNUN MANTIGI (nasil kuruldu, neden dogru)
+// =====================================================================
+// Satir: for (int i = 3; (long long)i * i <= num; i += 2)
+//
+// --- Amac ---
+// num asal mi? 1 ve kendisi disinda TEK BIR bolen bulmak yeter. Bulursak
+// asal degil, hic bulamazsak asal.
+//
+// --- Ilk fikir ---
+//   for (int i = 2; i < num; ++i)
+// 2'den num - 1'e kadar hepsini dene. Dogru calisir ama yavas: num = 97
+// icin 95 deneme yapar.
+//
+// --- Gozlem: bolenler cift cift gelir ---
+// 48'in bolen ciftleri:
+//   1 x 48
+//   2 x 24
+//   3 x 16
+//   4 x 12
+//   6 x 8
+//   8 x 6    <- ayni ciftler ters sirada tekrar basliyor
+//   12 x 4
+//   ...
+// 6 x 8'den sonrasi tekrar. Karekok 48 icin yaklasik 6,9: tekrarin basladigi
+// yer tam karekok. Yani karekoktan sonrasini denemek ayni ciftleri tersten
+// bulmaktir. 36 ve 91 ile yazarsan donus noktasini yine karekokte gorursun.
+//
+// --- Ispat: kucuk bolen karekoku gecemez (celiski ile) ---
+// num = a x b olsun. Diyelim ikisi de karekokten BUYUK:
+//   a > karekok(num)  ve  b > karekok(num)
+// O zaman:
+//   a x b  >  karekok(num) x karekok(num)  =  num
+// Ama a x b zaten num'a esit olmali. num > num olamaz, celiski. Demek ki
+// iki bolenin ikisi birden karekokten buyuk olamaz: en az biri, yani kucuk
+// olan, karekoku gecmez. Bu yuzden denemeyi karekokte durdurmak yeter,
+// kucuk boleni mutlaka yakalariz.
+//
+// Dikdortgen gozuyle: alani num olan dikdortgenin kenarlari a ve b. Kenarlar
+// esitse kare olur ve kenar tam karekok kadardir. Bir kenari karekokten
+// uzun yaparsan alanin sabit kalmasi icin digerini kisaltman gerekir; iki
+// kenar ayni anda uzun olamaz.
+//
+// --- Kodda yazilisi: i * i <= num ---
+// "i <= karekok(num)" demek, sqrt kullanmadan: i'nin karesi num'u gecmedi.
+// Carpma hizli ve ondalik hata icermez. Ornek: num = 97 icin i = 3, 5, 7, 9
+// denenir (9 x 9 = 81 <= 97), i = 11'de 121 > 97 olur ve dongu biter. Toplam
+// 4 deneme (ilk fikirde 95).
+//
+// --- Neden < degil <= ? (tam kare durumu) ---
+// Normal sayida bolen ciftinin iki yani farklidir (91 = 7 x 13), karekok
+// bolen degildir. Tam karede iki yan AYNI sayidir (49 = 7 x 7): kucuk bolen
+// karekokun tam kendisidir. num = 49 icin:
+//   i = 3 : i x i = 9   , 49 % 3 = 1 -> bolmuyor, devam
+//   i = 5 : i x i = 25  , 49 % 5 = 4 -> bolmuyor, devam
+//   i = 7 : i x i = 49  , 49 % 7 = 0 -> boldu, return false
+// <= ile 49 <= 49 dogru oldugu icin i = 7 denenir ve 49 asal degil cikar.
+// < yazilsaydi 49 < 49 yanlis olur, dongu i = 7'ye gelmeden biter, hic
+// bolen bulunamaz ve return true ile 49'a "asal" denirdi.
+// Bu hata sadece ASAL SAYININ KARESI olan sayilarda cikar: 9, 25, 49, 121,
+// 169, ... 81 gibi sayilarda cikmaz, cunku 81'in 3 gibi daha kucuk bir
+// boleni de vardir ve dongu onu i = 3'te erken yakalar.
+//
+// --- Neden i = 3'ten basliyor ve i += 2 ? ---
+// Bu satira gelen num TEKTIR (ciftler yukarida elendi). Tek sayiyi hicbir
+// cift sayi bolemez, o yuzden 2, 4, 6, ... denemek bosa. 3'ten baslayip
+// ikiser ilerlenir: 3, 5, 7, 9, ... Is yaklasik yariya iner.
+//
+// --- Neden (long long)i ? ---
+// int en fazla 2147483647 tutar. i = 46341 oldugunda i * i = 2147488281
+// olur, int'e sigmaz ve tasar; sonuc anlamsizlasir. (long long)i yazinca
+// carpma buyuk kutuda yapilir, tasma olmaz. Bu yuzden isPrime(2147483647)
+// de dogru cevap (true) verir. Donusumu carpmadan ONCE, i uzerinde
+// yapmak onemli: (long long)(i * i) olsaydi tasma parantez icinde zaten
+// olmus olurdu.
+//
+// --- Toplam hiz ---
+// Bir sayiyi test etmek en fazla karekok(num) / 2 tur surer. Tum aralik
+// icin adim sayisi yaklasik n x karekok(n) mertebesindedir ve erken cikis
+// sayesinde pratikte bundan da azdir. Ilk fikirdeki yaklasik n x n / 2
+// adimdan cok daha hizlidir. n = 100000 icin ic dongu yaklasik 1,3 milyon
+// tur doner, ilk fikirde yaklasik 5 milyar.
 
-// COMPILE: g++ -std=c++17 -Wall -Wextra lesson10_optimization.cpp -o program
+// COMPILE: g++ -std=c++17 -Wall -Wextra lesson10_primelogic.cpp -o program
