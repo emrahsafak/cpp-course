@@ -25,6 +25,7 @@
 //    6. Signature'i farkli YAPMAYAN seyler
 //    7. Tanim anindaki hatalar
 //    8. Cagri ani: overload resolution
+//       8.1 donusum haritasi -- hangi donusum hangi basamakta
 //    9. Cagri anindaki hatalar ve klasik tuzaklar
 //   10. Savunma araclari: nullptr ve = delete
 //   11. Ileri basliklar: const uye fonksiyon, template, name hiding,
@@ -465,11 +466,109 @@ void demo()
 //
 // Bir cagrinin uc olasi sonucu vardir: BASARI, AMBIGUOUS, NO MATCHING
 // FUNCTION. Ucuncusu, hicbir adayin viable olmadigi durumdur.
+//
+// 8.1. DONUSUM HARITASI -- hangi donusum hangi basamakta?
+//      Ezber gerekmez, tek bir mantik vardir: C++'ta butun temel (primitive)
+//      sayisal turler birbirine donusebilir. Soru "donusur mu" degil,
+//      "KAC PUANLA donusur" sorusudur.
+//
+//      TUR AILELERI (merkezde int ve double durur; sebebi en altta)
+//        tam sayi (integral) : bool, char, short, int, long, long long
+//        ondalikli (floating): float, double, long double
+//        adres               : pointer (int*, const char*, void*, ...)
+//
+//      BASAMAK 1 -- EXACT MATCH
+//        Tur birebir ayni, veya sifir maliyetli uyarlamalar:
+//          int -> int ,  double -> double
+//          "merhaba" (const char[8]) -> const char*   (array-to-pointer)
+//          okuma amacli const eklenmesi               (qualification conv.)
+//
+//      BASAMAK 2 -- PROMOTION: SADECE IKI KURAL VARDIR
+//        (1) Integral promotion : int'ten KUCUK tam sayi turleri -> int
+//            bool -> int ,  char -> int ,  short -> int
+//        (2) Floating promotion : float -> double
+//        Ucuncu bir promotion kurali YOKTUR. Ozellikle su ucu promotion
+//        DEGILDIR, basamak 3'tur:
+//          int    -> long          (ayni aile, ama int'ten buyuge gidis)
+//          double -> long double   (ayni aile, ama double'dan buyuge gidis)
+//          char   -> double        (aile degisimi)
+//
+//      BASAMAK 3 -- STANDARD CONVERSION
+//        Yukaridaki iki kuralin disinda kalan TUM sayisal ve pointer
+//        donusumleri buraya duser:
+//          integral conversions : int <-> long , int <-> unsigned ,
+//                                 long -> short , long -> char
+//          floating conversions : double -> float , double <-> long double
+//          floating-integral    : int <-> double , char <-> double ,
+//                                 long <-> float
+//          boolean conversions  : herhangi bir sayi -> bool
+//                                 herhangi bir pointer -> bool
+//
+//        DIKKAT: bu basamak TAM DUZ bir torba DEGILDIR. Standardin bir alt
+//        kurali vardir: pointer'i bool'a ceviren donusum, pointer'i baska bir
+//        pointer'a ceviren donusumden DAHA KOTUDUR:
+//            void slot(bool);  void slot(void*);
+//            int x = 0;  slot(&x);   -> slot(void*) secilir, slot(bool) degil
+//        Sayisal turler arasinda ise basamak gercekten duzdur, esit iki aday
+//        ambiguous verir:
+//            void f(long);  void f(unsigned int);
+//            f(5);   // HATA: int -> long ve int -> unsigned, ikisi de basamak 3
+//
+//      BASAMAK 4 -- USER-DEFINED CONVERSION
+//        Isin icine bir class / struct girer:
+//          const char* -> std::string   (string'in converting constructor'i)
+//          int -> MyType                (tek parametreli constructor'iniz)
+//          MyType -> int                (operator int() yazdiysaniz)
+//
+//        KRITIK KURAL: bir donusum dizisinde EN FAZLA BIR user-defined
+//        conversion bulunabilir. Zincirleme yapilmaz:
+//            struct A { A(int); };   struct B { B(A); };   void f(B);
+//            f(5);   // HATA: int -> A -> B iki user-defined adim ister
+//                    // "could not convert '5' from 'int' to 'B'"
+//        Bu kural cok sey aciklar: std::string bekleyen bir fonksiyona int
+//        gecirilemez, cunku int -> const char* -> std::string diye iki adimli
+//        bir yol aranmaz.
+//
+//      BASAMAK 5 -- ELLIPSIS (...)
+//        C tarzi degisken argument (printf gibi). En kotu basamak.
+//
+//      REFERANS BAGLAMA (overload setlerinde sik gorulur)
+//          void f(int&);  void f(const int&);
+//          int x = 1;        f(x);   -> f(int&)        (daha az const kazanir)
+//          const int y = 2;  f(y);   -> f(const int&)  (tek uygun aday)
+//          f(3);                     -> f(const int&)  (int& rvalue'ya baglanmaz)
+//
+//      NEDEN SADECE O IKI KURAL PROMOTION? Sebep donanimdir:
+//        islemci 1 bayt (char/bool) veya 2 bayt (short) ile dogrudan aritmetik
+//        yapmaz; once kendi dogal register boyutuna (int) genisletir. Benzer
+//        sekilde C, float argument'lari tarihsel olarak double'a yukseltir.
+//        Yani bu iki donusum donanimda zaten oluyordu; C++ bunlari "bedava
+//        terfi" sayip 2. basamaga koydu. Geri kalan her donusum gercek bir is
+//        yapar -- kirpma, isaret degisimi, format degisimi -- ve 3. basamaga
+//        duser.
+//
+//      TEK BAKISTA KARAR LISTESI
+//        1. Tur birebir ayni mi (veya const / array uyarlamasi)?       -> 1
+//        2. int'ten kucuk tam sayi -> int , ya da float -> double?     -> 2
+//        3. Baska herhangi bir sayisal veya pointer donusumu mu?       -> 3
+//        4. Isin icinde class / struct var mi (en fazla BIR adim)?     -> 4
+//        5. ... parametresi mi?                                        -> 5
 
 namespace resolution {
 
 void rank(int value)    { std::cout << "  rank(int): " << value << '\n'; }
 void rank(double value) { std::cout << "  rank(double): " << value << '\n'; }
+
+// 8.1 icin: pointer -> bool, pointer -> void* donusumunden DAHA KOTUDUR
+void slot(bool flag)  { std::cout << "  slot(bool): " << std::boolalpha << flag << '\n'; }
+void slot(void* addr) { std::cout << "  slot(void*): " << (addr ? "adres" : "null") << '\n'; }
+
+// 8.1 icin: bir donusum dizisinde en fazla BIR user-defined conversion olabilir
+struct Meters { Meters(int v) : value(v) {} int value; };
+struct Feet   { Feet(Meters m) : value(m.value * 3) {} int value; };
+
+void report(Meters m) { std::cout << "  report(Meters): " << m.value << '\n'; }
+void report(Feet f)   { std::cout << "  report(Feet): " << f.value << '\n'; }
 
 void demo()
 {
@@ -487,6 +586,14 @@ void demo()
                     // Promotion kazanir -> rank(double)
 
     // rank(5L);    // AMBIGUOUS: bkz. bolum 9.1
+
+    int local = 0;
+    slot(&local);   // int* -> void* (pointer conv.) , int* -> bool (boolean conv.)
+                    // pointer -> bool daha kotu sayilir -> slot(void*) kazanir
+
+    report(5);      // int -> Meters : TEK user-defined adim -> gecerli
+                    // int -> Meters -> Feet olsaydi IKI adim gerekirdi; o yol
+                    // hic denenmez, bu yuzden report(Feet) aday bile degildir
 }
 
 } // namespace resolution
