@@ -36,12 +36,46 @@
 // birakilmistir (signature, exact match, promotion, conversion ...).
 
 
-// 1. ON BILGI: KARISTIRILMASI KOLAY DORT KAVRAM CIFTI
+// NASIL OKUNACAK -- HER BOLUM AYNI AGIRLIKTA DEGILDIR
+// -----------------------------------------------------------------------
+// Bolum basliklarinda su uc etiket var:
+//
+//   [CEKIRDEK] Ezbere bilmelisin. Kod yazarken kullanilir, bakmaya vakit yok.
+//              Konunun gercek govdesi budur ve sanildigi kadar buyuk degildir.
+//   [ANLA]     Bir kez oku, mekanizmayi anla, EZBERLEME. Nasil calistigini
+//              bilmen yeterli; detay gerektiginde buraya donersin.
+//   [REFERANS] EZBERLENMEZ. Derleyici bir hata verdiginde acilip bakilir.
+//              Profesyoneller de bu kismi akilda tutmaz, bakar.
+//
+// ILK OKUMA ROTASI ([CEKIRDEK]):
+//     1 -> 2 -> 3 -> 4 -> 5 -> 6.1 -> 6.2 -> 9.4 -> 10.1 -> 12
+//     Bu rota konuyu KOD YAZACAK kadar ogretir. Burada durabilirsin.
+//
+// IKINCI OKUMA ([ANLA]) -- ilk rota oturduktan sonra:
+//     7 -> 8 -> 9.1 -> 9.2 -> 9.3 -> 10.2 -> 11.3 -> 11.5
+//
+// HIC EZBERLENMEYECEK ([REFERANS]):
+//     5.4-5.6 , 6.3 , 6.5 , 6.6 , 8.1 , 9.5 , 11.1 , 11.2 , 11.4
+//     Bunlari aklinda tutmaya calismak bos emektir. Ozellikle 8.1 bir TESHIS
+//     TABLOSUDUR: derleyici "ambiguous" dedigi gun acilir, "iki aday da ayni
+//     basamaktaymis" denir, static_cast konur, kapatilir. O kadar.
+//
+// TAKILDIYSAN: okumayi birak, KOD YAZ. Uc-dort overload tanimla, kasten
+// belirsiz bir cagri yap, derleyicinin ne dedigini oku. Bu tablolar okuyarak
+// degil, derleyiciyle kavga ederek oturur.
+//
+// UC SATIRLIK OZ -- gerisini unutsan bile bunlar kalsin:
+//     1. Ayni isim, farkli parameter listesi.
+//     2. Derleyici argument'larin TURUNE bakip secer, DERLEME aninda.
+//     3. Secemezse hata verir ve nedenini soyler. O zaman 8.1'e bakarsin.
+
+
+// 1. ON BILGI: KARISTIRILMASI KOLAY DORT KAVRAM CIFTI  [CEKIRDEK]
 // -----------------------------------------------------------------------
 // Overloading, bu dort ciftin ayrimi oturmadan ogrenilemez. Konunun tamami
 // bunlarin uzerine kurulur.
 //
-// 1.1. PARAMETER ve ARGUMENT
+// 1.1. PARAMETER ve ARGUMENT  [CEKIRDEK]
 //      parameter : fonksiyonu YAZARKEN tanimlanan yer tutucu (placeholder).
 //                  "int number" ifadesindeki number.
 //      argument  : fonksiyonu CAGIRIRKEN verilen gercek deger.
@@ -50,7 +84,7 @@
 //      yalnizca fonksiyonun govdesinde anlamlidir; cagiran taraf o ismi
 //      hic gormez. Bu yuzden parameter ismini serbestce secebilirsiniz.
 //
-// 1.2. CALL (cagirma) ve RETURN (dondurme)
+// 1.2. CALL (cagirma) ve RETURN (dondurme)  [CEKIRDEK]
 //      call   : bir fonksiyonu calistirmak. TUR KISITI YOKTUR. Herhangi bir
 //               fonksiyonun icinden herhangi bir fonksiyonu cagirabilirsiniz.
 //               void bir fonksiyon, int donduren bir fonksiyonu cagirabilir.
@@ -61,14 +95,14 @@
 //               "Hangi fonksiyonun icindeyim ve onun return type'i ne?"
 //      Cagirdiginiz baska fonksiyonlarin return type'i bu soruyu etkilemez.
 //
-// 1.3. RETURN TYPE ve PARAMETER LISTESI
+// 1.3. RETURN TYPE ve PARAMETER LISTESI  [CEKIRDEK]
 //      Bunlar fonksiyonun iki ayri ucudur:
 //        parameter listesi -> fonksiyona NE GIRER   (giris ucu)
 //        return type       -> fonksiyondan NE CIKAR (cikis ucu)
 //      Overloading YALNIZCA giris ucuyla ilgilenir. Asagidaki her sey bu
 //      cumlenin sonucudur.
 //
-// 1.4. DERLEME ZAMANI (compile time) ve CALISMA ZAMANI (run time)
+// 1.4. DERLEME ZAMANI (compile time) ve CALISMA ZAMANI (run time)  [CEKIRDEK]
 //      Ortada tek bir sey yoktur; IKI AYRI PROGRAM ve IKI AYRI AN vardir:
 //
 //        main.cpp     --[ DERLEYICI calisir: g++ ]-->  program dosyasi
@@ -154,7 +188,7 @@ void demo()
 } // namespace prelude
 
 
-// 2. OVERLOADING NEDIR, NEDEN VARDIR
+// 2. OVERLOADING NEDIR, NEDEN VARDIR  [CEKIRDEK]
 // -----------------------------------------------------------------------
 // Overloading olmasaydi, ayni isi farkli turler icin yapan fonksiyonlara
 // farkli isimler vermek zorunda kalirdiniz:
@@ -183,7 +217,7 @@ void demo()
 // derleme anina tasir.
 
 
-// 3. TANIM: BIRLIKTE ARANAN UC SART
+// 3. TANIM: BIRLIKTE ARANAN UC SART  [CEKIRDEK]
 // -----------------------------------------------------------------------
 // Function overloading = AYNI SCOPE icinde, AYNI ISIMLI, fakat PARAMETER
 // LISTESI FARKLI olan birden fazla fonksiyonun tanimlanmasi.
@@ -215,7 +249,7 @@ void demo()
 // fonksiyonlar arasinda olur.
 
 
-// 4. SIGNATURE (IMZA) NEDIR
+// 4. SIGNATURE (IMZA) NEDIR  [CEKIRDEK]
 // -----------------------------------------------------------------------
 // Signature, derleyicinin iki fonksiyon bildirimini "ayni fonksiyon mu,
 // farkli fonksiyon mu?" diye karsilastirdigi kimliktir.
@@ -238,13 +272,14 @@ void demo()
 //            |- parameter listesi ayni    -> AYNI FONKSIYON -> cakisma hatasi
 
 
-// 5. SIGNATURE'I FARKLI YAPAN SEYLER
+// 5. SIGNATURE'I FARKLI YAPAN SEYLER  [CEKIRDEK: 5.1-5.3 | REFERANS: 5.4-5.6]
 // -----------------------------------------------------------------------
 // Asagidakilerden HERHANGI BIRININ farkli olmasi gecerli bir overload yaratir.
 //
 //   5.1. Parameter SAYISI       : print(int)        / print(int, int)
 //   5.2. Parameter TURU         : print(int)        / print(double)
 //   5.3. Turlerin SIRASI        : print(string,int) / print(int,string)
+//   --- buradan sonrasi [REFERANS]: ilk okumada atlanabilir ---
 //   5.4. Referansin gosterdigi turdeki const : modify(int&) / modify(const int&)
 //        Bunlar iki ayri turdur: "degistirilebilir int'e referans" ve
 //        "salt-okunur int'e referans".
@@ -293,13 +328,13 @@ void demo()
 // Konunun ayirt edici bolgesi burasidir. Asagidaki degisiklikler fonksiyonu
 // ayirt etmeye YETMEZ; yani bunlarla overload uretemezsiniz.
 //
-// 6.1. PARAMETER ISMI
+// 6.1. PARAMETER ISMI  [CEKIRDEK]
 //      void f(int a);
 //      void f(int b);   // HATA: redefinition of 'void f(int)'
 //      Her ikisinin signature'i f(int). Parameter ismi govdenin icindeki bir
 //      etikettir, derleyici icin ayirt edici bilgi degildir.
 //
-// 6.2. RETURN TYPE
+// 6.2. RETURN TYPE  [CEKIRDEK]
 //      int    add(int a, int b);
 //      double add(int a, int b);   // HATA
 //      GCC  : ambiguating new declaration of 'double add(int, int)'
@@ -326,7 +361,7 @@ void demo()
 //        - Ama return type'in farkli olmasi bir fonksiyonu digerinden
 //          AYIRMAYA YETMEZ. Ayiran sey her zaman parameter listesidir.
 //
-// 6.3. BY-VALUE PARAMETER'DAKI UST DUZEY (top-level) const
+// 6.3. BY-VALUE PARAMETER'DAKI UST DUZEY (top-level) const  [REFERANS]
 //      void f(int value);
 //      void f(const int value);   // HATA: ayni signature -> redefinition
 //      Sebep: int by-value alindiginda fonksiyon cagiranin degiskeninin bir
@@ -342,7 +377,7 @@ void demo()
 //      Ozet: const, cagiranin gordugu bir seyi koruyorsa signature'a girer;
 //      yalnizca fonksiyonun yerel kopyasini kilitliyorsa girmez.
 //
-// 6.4. DEFAULT ARGUMENT
+// 6.4. DEFAULT ARGUMENT  [ANLA]
 //      Default argument signature'i DEGISTIRMEZ:
 //          void f(int a, int b);
 //          void f(int a, int b = 5);   // signature ikisinde de f(int, int)
@@ -368,7 +403,7 @@ void demo()
 //      o fonksiyonun hangi cagrilarla eslesebilecegini genisletir. Kimlik
 //      sabit kalir, eslesme alani buyur.
 //
-// 6.5. TYPE ALIAS (typedef / using)
+// 6.5. TYPE ALIAS (typedef / using)  [REFERANS]
 //      using Metre = int;
 //      void distance(Metre value);
 //      void distance(int value);   // HATA: Metre int'in takma adi -> ayni
@@ -376,7 +411,7 @@ void demo()
 //      using yeni bir tur yaratmaz, yalnizca takma ad verir. Gercekten ayri
 //      bir tur istiyorsaniz struct veya enum class kullanmaniz gerekir.
 //
-// 6.6. DIZI VE FONKSIYON PARAMETRELERI (adjustment)
+// 6.6. DIZI VE FONKSIYON PARAMETRELERI (adjustment)  [REFERANS]
 //      void f(int data[]);   // derleyici bunu f(int*) olarak duzeltir
 //      void f(int* data);    // HATA: ayni signature -> redefinition
 //      void g(int data[5]);  // bu da g(int*)'tir; boyut bilgisi atilir
@@ -402,7 +437,7 @@ void demo()
 } // namespace same_signature
 
 
-// 7. TANIM ANINDAKI HATALAR (DECLARATION -- derleme zamani)
+// 7. TANIM ANINDAKI HATALAR (DECLARATION -- derleme zamani)  [ANLA]
 // -----------------------------------------------------------------------
 // Overloading hatalari iki ayri zamanda ortaya cikar. Bu ayrimi gormek, hata
 // mesajlarini okumayi kolaylastirir. Once fonksiyonlari YAZARKEN cikanlar:
@@ -422,7 +457,7 @@ void demo()
 // imzalarin gecerli olup cagrinin cozulemedigi durumdur (bkz. bolum 9.1).
 
 
-// 8. CAGRI ANI: OVERLOAD RESOLUTION (CALL SITE -- yine derleme zamani)
+// 8. CAGRI ANI: OVERLOAD RESOLUTION (CALL SITE -- yine derleme zamani)  [ANLA]
 // -----------------------------------------------------------------------
 // Tanimlar gecerliyse, sira cagrida hangisinin secilecegine gelir. Surec uc
 // adimlidir ve tamami DERLEME ZAMANINDA isler.
@@ -467,7 +502,15 @@ void demo()
 // Bir cagrinin uc olasi sonucu vardir: BASARI, AMBIGUOUS, NO MATCHING
 // FUNCTION. Ucuncusu, hicbir adayin viable olmadigi durumdur.
 //
-// 8.1. DONUSUM HARITASI -- hangi donusum hangi basamakta?
+// 8.1. DONUSUM HARITASI -- hangi donusum hangi basamakta?  [REFERANS -- EZBERLENMEZ]
+//      !! BU BOLUMU EZBERLEMEYE CALISMA. Bir TESHIS TABLOSUDUR: derleyici
+//      !! "ambiguous" veya "no matching function" dedigi gun acilir, sebep
+//      !! bulunur, static_cast konur, kapatilir.
+//      !! Ilk okumada sadece su iki kurali aklinda tut, gerisi gerekmez:
+//      !!     promotion SADECE ikisidir -> int'ten kucuk tam sayi -> int
+//      !!                                  ve float -> double
+//      !!     geri kalan her sayisal / pointer donusumu bir alt basamaktir.
+//
 //      Ezber gerekmez, tek bir mantik vardir: C++'ta butun temel (primitive)
 //      sayisal turler birbirine donusebilir. Soru "donusur mu" degil,
 //      "KAC PUANLA donusur" sorusudur.
@@ -601,7 +644,7 @@ void demo()
 
 // 9. CAGRI ANINDAKI HATALAR VE KLASIK TUZAKLAR
 // -----------------------------------------------------------------------
-// 9.1. AMBIGUOUS CALL -- iki aday esit iyi
+// 9.1. AMBIGUOUS CALL -- iki aday esit iyi  [ANLA]
 //      void rank(int);  void rank(double);
 //      rank(5L);
 //        5L bir long'dur.
@@ -617,7 +660,7 @@ void demo()
 //      void rank(int); void rank(long); void rank(double);
 //      rank(5u);   // unsigned int: uc donusum de 3. seviyede -> ambiguous
 //
-// 9.2. NO MATCHING FUNCTION -- hic uygun aday yok
+// 9.2. NO MATCHING FUNCTION -- hic uygun aday yok  [ANLA]
 //      void rank(int);  void rank(double);
 //      rank(std::string("hello"));
 //        std::string ne int'e ne double'a donusur; hicbir aday viable degil
@@ -628,13 +671,13 @@ void demo()
 //      karsilanamaz. Hata mesajinin lafzina degil, hangi asamada (tanim mi,
 //      cagri mi) ciktigina bakmak gerekir.
 //
-// 9.3. TUZAK: PROMOTION, CONVERSION'I YENER
+// 9.3. TUZAK: PROMOTION, CONVERSION'I YENER  [ANLA]
 //      rank('A') cagrisinin 65 yazdirmasi bir hata degil, siralamanin
 //      dogrudan sonucudur. 'A' karakterinin sayisal degeri 65'tir ve secilen
 //      overload int aldigi icin sayi olarak yazdirilir. Beklenti 'A' gormekse,
 //      bir rank(char) overload'i eklemek gerekir (exact match olur).
 //
-// 9.4. TUZAK: STRING LITERAL, bool'u KAZANDIRIR
+// 9.4. TUZAK: STRING LITERAL, bool'u KAZANDIRIR  [CEKIRDEK]
 //      Konunun en cok can yakan tuzagi:
 //          void log(bool flag);
 //          void log(const std::string& text);
@@ -655,7 +698,7 @@ void demo()
 //      kontrol etmek zorundayiz. bool parameter'lari bu konuda en
 //      tehlikelisidir, cunku neredeyse her pointer ve sayi ona donusebilir.
 //
-// 9.5. TUZAK: f(int) ile f(int&) birlikte
+// 9.5. TUZAK: f(int) ile f(int&) birlikte  [REFERANS]
 //      void f(int value);
 //      void f(int& ref);     // tanim GECERLI: signature'lar farkli
 //      int x = 1;
@@ -685,7 +728,7 @@ void demo()
 
 // 10. SAVUNMA ARACLARI: nullptr VE = delete
 // -----------------------------------------------------------------------
-// 10.1. nullptr
+// 10.1. nullptr  [CEKIRDEK]
 //       void handle(int value);
 //       void handle(char* text);
 //         handle(0);         // 0 bir int literal -> handle(int) (exact match)
@@ -695,7 +738,7 @@ void demo()
 //       Eski NULL makrosu bir tam sayi oldugu icin pointer overload'ini
 //       kacirir. Modern C++'ta pointer icin DAIMA nullptr kullanilir.
 //
-// 10.2. = delete
+// 10.2. = delete  [ANLA]
 //       void setHealth(int hp);
 //       void setHealth(double) = delete;
 //         setHealth(100);    // OK
@@ -731,7 +774,7 @@ void demo()
 // Bu uc baslik da ayni kurallara dayanir; yalnizca henuz islenmemis
 // kavramlara deger. Simdilik mekanizmayi tanimak yeterlidir.
 //
-// 11.1. UYE FONKSIYONLARDA const OVERLOADING
+// 11.1. UYE FONKSIYONLARDA const OVERLOADING  [REFERANS]
 //       class Buffer {
 //           int&       at(std::size_t i);         // signature: at(size_t)
 //           const int& at(std::size_t i) const;   // signature: at(size_t) const
@@ -747,7 +790,7 @@ void demo()
 //       boyle calisir. C#'ta tasarimla (ReadOnlyCollection) sagladiginiz seyi
 //       C++ derleyiciye tip sistemi uzerinden garanti ettirir.
 //
-// 11.2. TEMPLATE ILE OVERLOAD
+// 11.2. TEMPLATE ILE OVERLOAD  [REFERANS]
 //       template <typename T> void show(T value);   // template
 //                             void show(int value); // non-template
 //         show(5);     // ikisi de exact match -> esitlikte NON-TEMPLATE kazanir
@@ -758,7 +801,7 @@ void demo()
 //       Kural sirasi: once donusum seviyesi (bolum 8'deki siralama), seviyeler
 //       esitse non-template tercih edilir.
 //
-// 11.3. SCOPE VE NAME HIDING
+// 11.3. SCOPE VE NAME HIDING  [ANLA]
 //       Bolum 3'teki "ayni scope" sartinin sonucu: farkli scope'taki ayni
 //       isimli fonksiyonlar overload OLMAZ, icteki distakini GIZLER.
 //           struct Base    { void speak(int value);    };
@@ -773,11 +816,11 @@ void demo()
 //       aday listesi olusmadan secim yapilamaz.
 //       Cozum, base'in overload'larini scope'a tasimaktir: using Base::speak;
 //
-// 11.4. main OVERLOAD EDILEMEZ
+// 11.4. main OVERLOAD EDILEMEZ  [REFERANS]
 //       Standart bunu acikca yasaklar. main, isletim sistemiyle sozlesmesi
 //       olan ozel bir fonksiyondur.
 //
-// 11.5. OVERLOADING vs OVERRIDING -- derleme zamani / calisma zamani
+// 11.5. OVERLOADING vs OVERRIDING -- derleme zamani / calisma zamani  [ANLA]
 //       Bolum 1.4'teki ayrimin en net gorundugu yer burasidir.
 //           void shoot(Weapon& weapon) { weapon.fire(); }   // TEK satir
 //           shoot(base);    // -> Weapon::fire()
@@ -881,7 +924,7 @@ void demo()
 } // namespace advanced
 
 
-// 12. PRATIK KURALLAR
+// 12. PRATIK KURALLAR  [CEKIRDEK]
 // -----------------------------------------------------------------------
 //  1. Overloading = ayni scope + ayni isim + farkli parameter listesi.
 //     Ucu birlikte aranir. Isimleri farkli iki fonksiyon overload DEGILDIR.
