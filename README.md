@@ -16,3 +16,5 @@ This repository contains my exercises and projects while learning C++.
 - [Lesson 09: Arrays](lesson-09-arrays/)
 - [Lesson 10: C++ Strings](lesson-10-c++strings/)
 - [Lesson 11: Algorithm](lesson-11-algorithm/)
+- [lesson 12: Const&Static](lesson-12-const&static/)
+- [lesson 13: TryCatch](lesson-13-trycatch/)
