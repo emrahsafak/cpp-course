@@ -260,7 +260,12 @@ namespace bolum5
 {
     void demo()
     {
-        double x = 10.0 / 0.0;      // exception YOK, sonuc inf
+        // 10.0 / 0.0 seklinde DOGRUDAN yazilsa: iki taraf da sabit oldugu
+        // icin derleyici bolmeyi derleme aninda yapar (constant folding).
+        // MSVC bunu reddeder: error C2124: divide or mod by zero.
+        // Payda degiskende oldugu icin ifade artik constant expression degil.
+        double sifir = 0.0;
+        double x = 10.0 / sifir;    // exception YOK, sonuc inf
         cout << "5) 10.0 / 0.0 = " << x << "  (exception firlatilmadi)\n";
     }
 }
